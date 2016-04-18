@@ -42,7 +42,7 @@ tableDef.addColumn('Product', enums.type('CharString'));
 tableDef.addColumn('Price', enums.type('Double'));
 
 // Create an extract at /path/to/your.tde
-extract = new tableau.extract('/path/to/your.tde');
+extract = new tableau.dataExtract('/path/to/your.tde');
 
 // Add your table definition to the extract.
 table = extract.addTable('extract', tableDef);
