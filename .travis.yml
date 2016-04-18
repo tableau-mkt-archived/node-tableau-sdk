@@ -1,0 +1,26 @@
+sudo: required
+language: node_js
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise-3.6
+    packages:
+      - clang
+
+node_js:
+  - '4.4'
+
+os:
+  - linux
+  - osx
+
+before_install:
+  - ./scripts/install-sdk.sh
+
+install:
+  - npm install
+
+script:
+  - true
