@@ -16,7 +16,12 @@
       ],
       "cflags": [
         "-std=c++1",
-        "-stdlib=libc++",
+        "-stdlib=libc++"
+      ],
+      "cflags!": [
+        "-fno-exceptions"
+      ],
+      "cflags_cc!": [
         "-fno-exceptions"
       ],
       "ldlflags": [
