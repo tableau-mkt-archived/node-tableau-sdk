@@ -14,9 +14,6 @@
         "src/TableauRow.cc",
         "src/TableauServerConnection.cc"
       ],
-      "include_dirs": [
-        "<!(node -e \"require('nan')\")"
-      ],
       "cflags": [
         "-std=c++1",
         "-stdlib=libc++",
