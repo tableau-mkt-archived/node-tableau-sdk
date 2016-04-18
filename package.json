@@ -1,0 +1,27 @@
+{
+  "name": "tableau-sdk",
+  "version": "0.1.0",
+  "description": "Create extracts and publish extracts to a Tableau Server using Node.js.",
+  "main": "index.js",
+  "dependencies": {
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node-gyp rebuild"
+  },
+  "keywords": [
+    "tableau",
+    "extract",
+    "api",
+    "tde",
+    "data"
+  ],
+  "author": {
+    "name": "Tableau Marketing",
+    "email": "",
+    "url": "https://github.com/tableau-mkt"
+  },
+  "gypfile": true
+}
