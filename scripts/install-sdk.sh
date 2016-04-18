@@ -10,5 +10,5 @@ fi
 if [ $TRAVIS_OS_NAME == 'osx' ]; then
   wget --directory-prefix=$HOME/tableau-c-sdk https://downloads.tableau.com/tssoftware/Tableau-SDK-9-3-0.dmg
   sudo hdiutil attach $HOME/tableau-c-sdk/Tableau-SDK-9-3-0.dmg
-  sudo cp -r /Volumes/Tableau\ SDK/Frameworks/ /Library/Frameworks/
+  sudo ditto /Volumes/Tableau\ SDK/Frameworks/ /Library/Frameworks/
 fi
