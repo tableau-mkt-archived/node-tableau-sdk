@@ -2,7 +2,6 @@
 'make_global_settings': [
     ['CXX','/usr/bin/clang++'],
     ['LINK','/usr/bin/clang++'],
-    ['DYLD_FALLBACK_FRAMEWORK_PATH', '/usr/include']
   ],
   "targets": [
     {
@@ -25,15 +24,9 @@
       "cflags_cc!": [
         "-fno-exceptions"
       ],
-      "ldflags": [
-        "-stdlib=libc++",
-        "-framework TableauCommon",
-        "-framework TableauExtract",
-        "-framework TableauServer"
-      ],
       "conditions": [
         [
-          "OS!=\"win\"",
+          "OS==\"linux\"",
           {
             "cflags+": [
               "-std=c++11",
@@ -44,9 +37,20 @@
               "-stdlib=libc++"
             ],
             "cflags_cc+": [
-              "-std=c++11",
-              "-stdlib=libc++"
-            ]
+              "-I/usr/include"
+              "-std=c++0x"
+            ],
+            "link_settings": {
+              "libraries": [
+                "-lTableauCommon",
+                "-lTableauExtract",
+                "-lTableauServer"
+              ],
+              "ldflags": [
+                "-L/usr/lib64/tableausdk",
+                "-Wl,-rpath,/usr/lib64/tableausdk"
+              ]
+            },
           }
         ],
         [
