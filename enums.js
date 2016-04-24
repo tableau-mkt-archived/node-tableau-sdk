@@ -60,18 +60,18 @@ var _ = require('underscore'),
   },
   smune = {
     type: _.invert(enums.type),
-  collation: _.invert(enums.collation)
+    collation: _.invert(enums.collation)
   };
 
 module.exports = {
   type: function(name) {
-    return smune.type[name];
+    return parseInt(smune.type[name]);
   },
   typeName: function (type) {
     return enums.type[type];
   },
   collation: function(name) {
-    return smune.collation[name];
+    return parseInt(smune.collation[name]);
   },
   collationName: function(collation) {
     return enums.collation[collation];
