@@ -50,7 +50,7 @@
                 "-L/usr/lib64/tableausdk",
                 "-Wl,-rpath,/usr/lib64/tableausdk"
               ]
-            },
+            }
           }
         ],
         [
