@@ -9,7 +9,6 @@ chai.should();
 describe('tableDefinition', function () {
   var tableau = require('../index.js'),
       enums = require('../enums.js'),
-      targetDir = './build/test',
       tableDef;
 
   it('creates a table definition', function () {
