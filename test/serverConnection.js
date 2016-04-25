@@ -35,7 +35,7 @@ describe('serverConnection', function () {
     // @todo Actual test of connect depends on mocking Tableau Server...
     serverConnection = tableau.serverConnection();
     expect(serverConnection.connect.bind(serverConnection, 'https://10ay.online.tableau.com', 'testUser', 'testPass', 'testSiteId'))
-      .to.throw(/401/);
+      .to.throw();
   });
 
   it('has a publush extract function', function () {
