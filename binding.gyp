@@ -71,6 +71,23 @@
               "GCC_ENABLE_CPP_EXCEPTIONS": "YES"
             }
           }
+        ],
+        [
+          "OS==\"win\"",
+          {
+            "cflags_cc+": [
+              "/IC:\Program Files\Tableau\SDK\include",
+              "/EHsc"
+            ],
+            "link_settings": {
+              "ldflags": [
+                "/LIBPATH:C:\Program Files\Tableau\SDK\lib"
+                "tableaucommon.lib",
+                "tableauextract.lib",
+                "tableauserver.lib"
+              ]
+            }
+          }
         ]
       ]
     }
