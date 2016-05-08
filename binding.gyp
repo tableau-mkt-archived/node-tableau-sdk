@@ -75,16 +75,20 @@
         [
           "OS==\"win\"",
           {
-            "include_dirs": [
-              'C:\Program Files\Tableau\SDK\include',
+            "cflags_cc+": [
+              "/EHsc"
             ],
-            "link_settings": {
-              "libraries": [
-                'C:\Program Files\Tableau\SDK\lib\TableauCommon.lib',
-                'C:\Program Files\Tableau\SDK\lib\TableauExtract.lib',
-                'C:\Program Files\Tableau\SDK\lib\TableauServer.lib'
-              ]
-            }
+            "include_dirs": [
+              'C:\Program Files\Tableau\SDK\include'
+            ],
+            "libraries": [
+              '-l\"C:\Program Files\Tableau\SDK\lib\TableauCommon.lib\"',
+              '-l\"C:\Program Files\Tableau\SDK\lib\TableauExtract.lib\"',
+              '-l\"C:\Program Files\Tableau\SDK\lib\TableauServer.lib\"'
+            ],
+            "ldflags": [
+              '-L\"C:\Program Files\Tableau\SDK\lib\"'
+            ]
           }
         ]
       ]
