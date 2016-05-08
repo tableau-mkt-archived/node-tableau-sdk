@@ -75,16 +75,14 @@
         [
           "OS==\"win\"",
           {
-            "cflags_cc+": [
-              "/IC:\Program Files\Tableau\SDK\include",
-              "/EHsc"
+            "include_dirs": [
+              'C:\Program Files\Tableau\SDK\include',
             ],
             "link_settings": {
-              "ldflags": [
-                "/LIBPATH:C:\Program Files\Tableau\SDK\lib"
-                "tableaucommon.lib",
-                "tableauextract.lib",
-                "tableauserver.lib"
+              "libraries": [
+                'C:\Program Files\Tableau\SDK\lib\TableauCommon.lib',
+                'C:\Program Files\Tableau\SDK\lib\TableauExtract.lib',
+                'C:\Program Files\Tableau\SDK\lib\TableauServer.lib'
               ]
             }
           }
