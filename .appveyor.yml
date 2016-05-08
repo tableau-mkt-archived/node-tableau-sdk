@@ -6,7 +6,7 @@ install:
   - MD "C:\Program Files\Tableau"
   - MD "C:\Program Files\Tableau\SDK"
   - curl -fsS -o "C:\Program Files\Tableau\sdk.zip" https://downloads.tableau.com/tssoftware/Tableau-SDK-C-Java-64Bit-9-3-0.zip
-  - 7z e "C:\Program Files\Tableau\sdk.zip" -o"C:\Program Files\Tableau\SDK" -r
+  - 7z x "C:\Program Files\Tableau\sdk.zip" -o"C:\Program Files\Tableau\SDK" -r
 
   # Install the node module for the targeted node version.
   - ps: Install-Product node $env:nodejs_version
