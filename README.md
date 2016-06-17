@@ -44,7 +44,7 @@ tableDef.addColumn('Price', enums.type('Double'));
 extract = new tableau.dataExtract('/path/to/your.tde');
 
 // Add your table definition to the extract.
-table = extract.addTable('extract', tableDef);
+table = extract.addTable('Extract', tableDef);
 
 // Create a row of data.
 row = tableau.tableRow(tableDef);
