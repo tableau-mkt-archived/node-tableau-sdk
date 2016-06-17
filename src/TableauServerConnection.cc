@@ -1,4 +1,5 @@
 #include "TableauServerConnection.h"
+#include "TableauException.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <TableauServer/TableauServer_cpp.h>
@@ -107,13 +108,7 @@ void ServerConnection::Connect(const FunctionCallbackInfo<Value>& args) {
     obj->nativeServerConnection_->Connect(wHost, wUser, wPass, wSiteId);
   }
   catch (const Tableau::TableauException& e) {
-    Isolate* isolate = args.GetIsolate();
-
-    wstring wErrorMessage = e.GetMessage();
-    string errorMessage(wErrorMessage.begin(), wErrorMessage.end());
-
-    isolate->ThrowException(String::NewFromUtf8(isolate, errorMessage.c_str()));
-    return;
+    THROW_TABLEAU_EXCEPTION(e); 
   }
 }
 
@@ -146,13 +141,7 @@ void ServerConnection::PublishExtract(const FunctionCallbackInfo<Value>& args) {
     obj->nativeServerConnection_->PublishExtract(wPath, wProjectName, wDataSourceName, overwrite);
   }
   catch (const Tableau::TableauException& e) {
-    Isolate* isolate = args.GetIsolate();
-
-    wstring wErrorMessage = e.GetMessage();
-    string errorMessage(wErrorMessage.begin(), wErrorMessage.end());
-
-    isolate->ThrowException(String::NewFromUtf8(isolate, errorMessage.c_str()));
-    return;
+    THROW_TABLEAU_EXCEPTION(e); 
   }
 }
 
