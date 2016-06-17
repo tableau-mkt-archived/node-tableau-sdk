@@ -13,6 +13,9 @@ describe('extract', function () {
       extract,
       tableDef;
 
+  // These tests actually read/write from/to disk. Account for slowness here.
+  this.timeout(5000);
+
   before(function() {
     // Ensure we have a place to put test extracts.
     fs.mkdirSync(targetDir);
