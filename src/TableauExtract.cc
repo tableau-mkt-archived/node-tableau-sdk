@@ -1,5 +1,6 @@
 #include "TableauExtract.h"
 #include "TableauTable.h"
+#include "TableauException.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <TableauExtract/TableauExtract_cpp.h>
@@ -104,7 +105,11 @@ void Extract::HasTable(const FunctionCallbackInfo<Value>& args) {
 }
 
 void Extract::AddTable(const FunctionCallbackInfo<Value>& args) {
-  NodeTde::Table::NewInstanceFromDefinition(args);
+  try {
+    NodeTde::Table::NewInstanceFromDefinition(args);
+  } catch (const Tableau::TableauException& e) {
+    THROW_TABLEAU_EXCEPTION(e);
+  }
 }
 
 void Extract::OpenTable(const FunctionCallbackInfo<Value>& args) {
