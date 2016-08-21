@@ -25,6 +25,14 @@ describe('extract', function () {
     process.env['TAB_SDK_LOGDIR'] = targetDir;
   });
 
+  it('throws error when opening extract with invalid name', function () {
+    expectedPath = targetDir + 'invalid-name';
+
+    // Attempt to open an extract with an invalid name (doesn't end in ".tde").
+    expect(tableau.dataExtract.bind(tableau, expectedPath))
+      .to.throw();
+  });
+
   it('creates an extract file', function () {
     expectedPath = targetDir + '/mocha-create.tde';
     extract = tableau.dataExtract(expectedPath);
@@ -107,7 +115,10 @@ describe('extract', function () {
 
     // Delete any TDEs that have been generated.
     if (expectedPath) {
-      fs.unlinkSync(expectedPath);
+      try {
+        fs.unlinkSync(expectedPath);
+      }
+      catch (e) {}
       expectedPath = null;
     }
   });

@@ -70,9 +70,14 @@ void Extract::New(const FunctionCallbackInfo<Value>& args) {
     std::copy(path.begin(), path.end(), wpath.begin());
     //nativeExtract extract(wpath);
 
-    Extract* obj = new Extract(wpath);
-    obj->Wrap(args.This());
-    args.GetReturnValue().Set(args.This());
+    try {
+      Extract* obj = new Extract(wpath);
+      obj->Wrap(args.This());
+      args.GetReturnValue().Set(args.This());
+    }
+     catch (const Tableau::TableauException& e) {
+      THROW_TABLEAU_EXCEPTION(e);
+    }
   }
   // Invoked as plain function `Extract(...)`, turn into construct call.
   else {
@@ -107,7 +112,8 @@ void Extract::HasTable(const FunctionCallbackInfo<Value>& args) {
 void Extract::AddTable(const FunctionCallbackInfo<Value>& args) {
   try {
     NodeTde::Table::NewInstanceFromDefinition(args);
-  } catch (const Tableau::TableauException& e) {
+  }
+  catch (const Tableau::TableauException& e) {
     THROW_TABLEAU_EXCEPTION(e);
   }
 }
