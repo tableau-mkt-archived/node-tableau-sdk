@@ -1,6 +1,7 @@
 'use strict';
 
 var chai = require('chai'),
+    expect = chai.expect,
     fs = require('fs');
 
 chai.use(require('chai-fs'));
@@ -32,6 +33,13 @@ describe('table', function () {
     tableDef.setDefaultCollation(enums.collation('en_US'));
     tableDef.addColumnWithCollation('FirstColumn', enums.type('Boolean'), enums.collation('ja'));
     tableDef.addColumnWithCollation('SecondColumn', enums.type('CharString'), enums.collation('en_GB'));
+  });
+
+  it('throws error when adding table without name', function () {
+    // Attempt to add a table with no name.
+    expect(extract.addTable.bind(extract))
+      // Note: this exception is defined by us (not Tableau SDK).
+      .to.throw('You must provide a table name');
   });
 
   it('gets table definition from added table', function () {
