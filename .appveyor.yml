@@ -10,6 +10,7 @@ install:
 
   # Install the node module for the targeted node version.
   - ps: Install-Product node $env:nodejs_version
+  - npm -g install npm@next
   - npm install
 
 test_script:
