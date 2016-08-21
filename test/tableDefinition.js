@@ -1,6 +1,7 @@
 'use strict';
 
 var chai = require('chai'),
+    expect = chai.expect,
     fs = require('fs');
 
 chai.use(require('chai-fs'));
@@ -38,6 +39,23 @@ describe('tableDefinition', function () {
     tableDef = tableau.tableDefinition();
 
     return tableDef.getColumnCount().should.equal(0);
+  });
+
+  it('throws error when adding column with invalid type', function () {
+    tableDef = tableau.tableDefinition();
+
+    // Attempt to add a column with an invalid type.
+    expect(tableDef.addColumn.bind(tableDef, 'Price', 'InvalidType'))
+      .to.throw();
+  });
+
+  it('throws error when adding column with duplicate name', function () {
+    tableDef = tableau.tableDefinition();
+    tableDef.addColumn('Price', enums.type('Double'));
+
+    // Attempt to add a column with the same name.
+    expect(tableDef.addColumn.bind(tableDef, 'Price', enums.type('Double')))
+      .to.throw();
   });
 
   it('adds column', function () {
