@@ -163,8 +163,13 @@ void TableDefinition::AddColumnWithCollation(const FunctionCallbackInfo<Value>& 
   int collationInt(args[2]->IntegerValue());
   Tableau::Collation collation = static_cast<Tableau::Collation>(collationInt);
 
-  TableDefinition* obj = ObjectWrap::Unwrap<TableDefinition>(args.Holder());
-  obj->nativeTableDefinition_->AddColumnWithCollation(column, type, collation);
+  try {
+    TableDefinition* obj = ObjectWrap::Unwrap<TableDefinition>(args.Holder());
+    obj->nativeTableDefinition_->AddColumnWithCollation(column, type, collation);
+  }
+  catch (const Tableau::TableauException& e) {
+    THROW_TABLEAU_EXCEPTION(e);
+  }
 }
 
 void TableDefinition::GetColumnCount(const FunctionCallbackInfo<Value>& args) {
