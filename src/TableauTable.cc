@@ -91,6 +91,12 @@ void Table::NewInstanceFromDefinition(const FunctionCallbackInfo<Value>& args) {
     return;
   }
 
+  // Check for table definition argument.
+  if (!args[1]->IsObject()) {
+    isolate->ThrowException(String::NewFromUtf8(isolate, "You must provide a table definition when adding a table."));
+    return;
+  }
+
   Local<ObjectTemplate> tpl = ObjectTemplate::New(isolate);
   tpl->SetInternalFieldCount(1);
   Local<Object> instance = tpl->NewInstance();

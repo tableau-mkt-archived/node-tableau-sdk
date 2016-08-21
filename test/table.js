@@ -42,6 +42,13 @@ describe('table', function () {
       .to.throw('You must provide a table name');
   });
 
+  it('throws error when adding table without a definition', function () {
+    // Attempt to add a table with no name.
+    expect(extract.addTable.bind(extract, 'Extract'))
+      // Note: this exception is defined by us (not Tableau SDK).
+      .to.throw('You must provide a table definition');
+  });
+
   it('gets table definition from added table', function () {
     var returnedTableDef;
 
