@@ -119,7 +119,12 @@ void Extract::AddTable(const FunctionCallbackInfo<Value>& args) {
 }
 
 void Extract::OpenTable(const FunctionCallbackInfo<Value>& args) {
-  NodeTde::Table::NewInstance(args);
+  try {
+    NodeTde::Table::NewInstance(args);
+  }
+  catch (const Tableau::TableauException& e) {
+    THROW_TABLEAU_EXCEPTION(e);
+  }
 }
 
 Tableau::Extract* Extract::GetExtract() {

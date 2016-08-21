@@ -87,6 +87,16 @@ describe('extract', function () {
     return extract.addTable('Extract', tableDef).should.have.property('insert');
   });
 
+  it('throws error when opening non-existent table on extract', function () {
+    // Create an extract.
+    expectedPath = targetDir + '/mocha-404-table-not-found.tde';
+    extract = tableau.dataExtract(expectedPath);
+
+    // Attempt to open a table that does not exist.
+    expect(extract.openTable.bind(extract, 'UnrealTable'))
+      .to.throw();
+  });
+
   it('opens existing table on extract', function () {
     // Create an extract.
     expectedPath = targetDir + '/mocha-open-table.tde';
