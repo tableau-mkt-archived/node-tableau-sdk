@@ -76,19 +76,33 @@
           "OS==\"win\"",
           {
             "cflags_cc+": [
-              "/EHsc"
+              "IC:\Program Files\Tableau\SDK\include /EHsc"
+            ],
+            "cflags_cc!": [
+              "-fno-exceptions"
             ],
             "include_dirs": [
-              'C:\Program Files\Tableau\SDK\include'
+              "C:\\Program Files\\Tableau\\SDK\\include"
             ],
             "libraries": [
-              '-l\"C:\Program Files\Tableau\SDK\lib\TableauCommon.lib\"',
-              '-l\"C:\Program Files\Tableau\SDK\lib\TableauExtract.lib\"',
-              '-l\"C:\Program Files\Tableau\SDK\lib\TableauServer.lib\"'
+              "C:\\Program Files\\Tableau\\SDK\\lib\\TableauCommon.lib",
+              "C:\\Program Files\\Tableau\\SDK\\lib\\TableauExtract.lib",
+              "C:\\Program Files\\Tableau\\SDK\\lib\\TableauServer.lib"
             ],
             "ldflags": [
-              '-L\"C:\Program Files\Tableau\SDK\lib\"'
-            ]
+              "/LIBPATH:C:\\Program Files\\Tableau\\SDK\\lib tableaucommon.lib tableauextract.lib tableauserver.lib"
+            ],
+            "msvs_settings": {
+              "VCCLCompilerTool": {
+                "ExceptionHandling": 1
+              },
+              "VCLinkerTool": {
+                "GenerateDebugInformation": "true",
+                "AdditionalLibraryDirectories": [
+                  "C:\\Program Files\\Tableau\\SDK\\lib"
+                ]
+              }
+            }
           }
         ]
       ]

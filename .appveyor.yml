@@ -2,6 +2,9 @@ environment:
   nodejs_version: "4.4"
 
 install:
+  # Install VC++ Redistributables...
+  - choco install vcredist2015
+
   # Install the SDK.
   - MD "C:\Program Files\Tableau"
   - MD "C:\Program Files\Tableau\SDK"
