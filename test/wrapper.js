@@ -2,8 +2,7 @@
 
 var chai = require('chai'),
     expect = chai.expect,
-    fs = require('fs'),
-    sinon = require('sinon');
+    fs = require('fs');
 
 chai.use(require('chai-fs'));
 chai.should();
