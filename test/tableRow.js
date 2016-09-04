@@ -30,7 +30,7 @@ describe('tableRow', function () {
   it('creates a table row', function () {
     tableRow = tableau.tableRow(tableDef);
 
-    return tableRow.setNull.should.be.ok;
+    return tableRow.setNull.should.be.ok();
   });
 
   it('sets null values', function () {

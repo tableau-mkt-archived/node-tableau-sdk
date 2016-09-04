@@ -15,7 +15,7 @@ describe('tableDefinition', function () {
   it('creates a table definition', function () {
     tableDef = tableau.tableDefinition();
 
-    return tableDef.close.should.be.ok;
+    return tableDef.close.should.be.ok();
   });
 
   it('gets default collation', function () {

@@ -37,7 +37,7 @@ describe('extract', function () {
     expectedPath = targetDir + '/mocha-create.tde';
     extract = tableau.dataExtract(expectedPath);
 
-    return expectedPath.should.be.a.file;
+    return expectedPath.should.be.a.file();
   });
 
   it('opens an existing extract file', function () {
@@ -50,7 +50,7 @@ describe('extract', function () {
     // Open the existing extract.
     extract = tableau.dataExtract(expectedPath);
 
-    return extract.close.should.be.ok;
+    return extract.close.should.be.ok();
   });
 
   it('checks if extract has table', function () {
