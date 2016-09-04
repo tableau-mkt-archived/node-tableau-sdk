@@ -1,5 +1,6 @@
 #include "TableauRow.h"
 #include "TableauTableDefinition.h"
+#include "TableauException.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <TableauExtract/TableauExtract_cpp.h>
@@ -158,7 +159,12 @@ void Row::SetDate(const FunctionCallbackInfo<Value>& args) {
   int day(args[3]->IntegerValue());
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
-  obj->nativeRow_->SetDate(columnNumber, year, month, day);
+  try {
+    obj->nativeRow_->SetDate(columnNumber, year, month, day);
+  }
+  catch (const Tableau::TableauException& e) {
+    THROW_TABLEAU_EXCEPTION(e);
+  }
 }
 
 void Row::SetDateTime(const FunctionCallbackInfo<Value>& args) {
@@ -172,7 +178,12 @@ void Row::SetDateTime(const FunctionCallbackInfo<Value>& args) {
   int frac(args[7]->IntegerValue());
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
-  obj->nativeRow_->SetDateTime(columnNumber, year, month, day, hour, min, sec, frac);
+  try {
+    obj->nativeRow_->SetDateTime(columnNumber, year, month, day, hour, min, sec, frac);
+  }
+  catch (const Tableau::TableauException& e) {
+    THROW_TABLEAU_EXCEPTION(e);
+  }
 }
 
 void Row::SetDuration(const FunctionCallbackInfo<Value>& args) {

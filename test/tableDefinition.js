@@ -1,6 +1,7 @@
 'use strict';
 
 var chai = require('chai'),
+    expect = chai.expect,
     fs = require('fs');
 
 chai.use(require('chai-fs'));
@@ -40,6 +41,23 @@ describe('tableDefinition', function () {
     return tableDef.getColumnCount().should.equal(0);
   });
 
+  it('throws error when adding column with invalid type', function () {
+    tableDef = tableau.tableDefinition();
+
+    // Attempt to add a column with an invalid type.
+    expect(tableDef.addColumn.bind(tableDef, 'Price', 'InvalidType'))
+      .to.throw();
+  });
+
+  it('throws error when adding column with duplicate name', function () {
+    tableDef = tableau.tableDefinition();
+    tableDef.addColumn('Price', enums.type('Double'));
+
+    // Attempt to add a column with the same name.
+    expect(tableDef.addColumn.bind(tableDef, 'Price', enums.type('Double')))
+      .to.throw();
+  });
+
   it('adds column', function () {
     tableDef = tableau.tableDefinition();
     tableDef.addColumn('BoolColumn', enums.type('Boolean'));
@@ -70,6 +88,23 @@ describe('tableDefinition', function () {
     tableDef.addColumnWithCollation('Name', enums.type('CharString'), enums.collation('fr_FR'));
 
     return tableDef.getColumnCount().should.equal(1);
+  });
+
+  it('throws error when adding column with collation with invalid type', function () {
+    tableDef = tableau.tableDefinition();
+
+    // Attempt to add a column with collation with an invalid type.
+    expect(tableDef.addColumnWithCollation.bind(tableDef, 'Price', 'InvalidType'))
+      .to.throw();
+  });
+
+  it('throws error when adding column with duplicate name', function () {
+    tableDef = tableau.tableDefinition();
+    tableDef.addColumnWithCollation('Price', enums.type('Double'), enums.collation('ja'));
+
+    // Attempt to add a column with collation with the same name.
+    expect(tableDef.addColumnWithCollation.bind(tableDef, 'Price', enums.type('Double'),  enums.collation('ja')))
+      .to.throw();
   });
 
   it('gets column collation', function () {

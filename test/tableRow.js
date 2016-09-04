@@ -1,6 +1,7 @@
 'use strict';
 
 var chai = require('chai'),
+    expect = chai.expect,
     fs = require('fs');
 
 chai.use(require('chai-fs'));
@@ -71,11 +72,23 @@ describe('tableRow', function () {
     tableRow.setDate(3, 3000, 12, 31);
   });
 
+  it('throws error when inserting invalid date values', function () {
+    tableRow = tableau.tableRow(tableDef);
+    expect(tableRow.setDate.bind(tableau, 3, 2016, 0, 24))
+      .to.throw();
+  });
+
   it('sets date/time values', function () {
     tableRow = tableau.tableRow(tableDef);
     tableRow.setDateTime(4, 2016, 4, 24, 16, 44, 23, 0);
     tableRow.setDateTime(4, 1959, 3, 27, 1, 0, 0, 0, 0);
     tableRow.setDateTime(4, 3000, 12, 31, 20, 9, 14, 100);
+  });
+
+  it('throws error when inserting invalid date/time values', function () {
+    tableRow = tableau.tableRow(tableDef);
+    expect(tableRow.setDateTime.bind(tableau, 3, 2016, 0, 24, 16, 44, 23, 0))
+      .to.throw();
   });
 
   it('sets duration values', function () {

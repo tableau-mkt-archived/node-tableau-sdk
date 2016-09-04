@@ -2,6 +2,7 @@
 #include "TableauExtract.h"
 #include "TableauTableDefinition.h"
 #include "TableauRow.h"
+#include "TableauException.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <TableauExtract/TableauExtract_cpp.h>
@@ -83,6 +84,18 @@ void Table::NewInstance(const FunctionCallbackInfo<Value>& args) {
 
 void Table::NewInstanceFromDefinition(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
+
+  // Check for a table name argument.
+  if (!args[0]->IsString()) {
+    isolate->ThrowException(String::NewFromUtf8(isolate, "You must provide a table name of 'Extract' when adding a table."));
+    return;
+  }
+
+  // Check for table definition argument.
+  if (!args[1]->IsObject()) {
+    isolate->ThrowException(String::NewFromUtf8(isolate, "You must provide a table definition when adding a table."));
+    return;
+  }
 
   Local<ObjectTemplate> tpl = ObjectTemplate::New(isolate);
   tpl->SetInternalFieldCount(1);

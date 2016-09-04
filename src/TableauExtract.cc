@@ -1,5 +1,6 @@
 #include "TableauExtract.h"
 #include "TableauTable.h"
+#include "TableauException.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <TableauExtract/TableauExtract_cpp.h>
@@ -69,9 +70,14 @@ void Extract::New(const FunctionCallbackInfo<Value>& args) {
     std::copy(path.begin(), path.end(), wpath.begin());
     //nativeExtract extract(wpath);
 
-    Extract* obj = new Extract(wpath);
-    obj->Wrap(args.This());
-    args.GetReturnValue().Set(args.This());
+    try {
+      Extract* obj = new Extract(wpath);
+      obj->Wrap(args.This());
+      args.GetReturnValue().Set(args.This());
+    }
+     catch (const Tableau::TableauException& e) {
+      THROW_TABLEAU_EXCEPTION(e);
+    }
   }
   // Invoked as plain function `Extract(...)`, turn into construct call.
   else {
@@ -104,11 +110,21 @@ void Extract::HasTable(const FunctionCallbackInfo<Value>& args) {
 }
 
 void Extract::AddTable(const FunctionCallbackInfo<Value>& args) {
-  NodeTde::Table::NewInstanceFromDefinition(args);
+  try {
+    NodeTde::Table::NewInstanceFromDefinition(args);
+  }
+  catch (const Tableau::TableauException& e) {
+    THROW_TABLEAU_EXCEPTION(e);
+  }
 }
 
 void Extract::OpenTable(const FunctionCallbackInfo<Value>& args) {
-  NodeTde::Table::NewInstance(args);
+  try {
+    NodeTde::Table::NewInstance(args);
+  }
+  catch (const Tableau::TableauException& e) {
+    THROW_TABLEAU_EXCEPTION(e);
+  }
 }
 
 Tableau::Extract* Extract::GetExtract() {

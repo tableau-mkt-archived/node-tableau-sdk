@@ -1,5 +1,6 @@
 #include "TableauTableDefinition.h"
 #include "TableauTable.h"
+#include "TableauException.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <TableauExtract/TableauExtract_cpp.h>
@@ -141,8 +142,13 @@ void TableDefinition::AddColumn(const FunctionCallbackInfo<Value>& args) {
   int typeInt(args[1]->IntegerValue());
   Tableau::Type type = static_cast<Tableau::Type>(typeInt);
 
-  TableDefinition* obj = ObjectWrap::Unwrap<TableDefinition>(args.Holder());
-  obj->nativeTableDefinition_->AddColumn(column, type);
+  try {
+    TableDefinition* obj = ObjectWrap::Unwrap<TableDefinition>(args.Holder());
+    obj->nativeTableDefinition_->AddColumn(column, type);
+  }
+  catch (const Tableau::TableauException& e) {
+    THROW_TABLEAU_EXCEPTION(e);
+  }
 }
 
 void TableDefinition::AddColumnWithCollation(const FunctionCallbackInfo<Value>& args) {
@@ -157,8 +163,13 @@ void TableDefinition::AddColumnWithCollation(const FunctionCallbackInfo<Value>& 
   int collationInt(args[2]->IntegerValue());
   Tableau::Collation collation = static_cast<Tableau::Collation>(collationInt);
 
-  TableDefinition* obj = ObjectWrap::Unwrap<TableDefinition>(args.Holder());
-  obj->nativeTableDefinition_->AddColumnWithCollation(column, type, collation);
+  try {
+    TableDefinition* obj = ObjectWrap::Unwrap<TableDefinition>(args.Holder());
+    obj->nativeTableDefinition_->AddColumnWithCollation(column, type, collation);
+  }
+  catch (const Tableau::TableauException& e) {
+    THROW_TABLEAU_EXCEPTION(e);
+  }
 }
 
 void TableDefinition::GetColumnCount(const FunctionCallbackInfo<Value>& args) {
