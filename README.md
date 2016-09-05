@@ -9,7 +9,7 @@ to Tableau Server and Tableau Online using JavaScript!
 ## Installation
 
 __Warning__: Under active development. Currently only known to work on OSX and
-Ubuntu using node v4.4. Check the issue queue for updates or to contribute
+Ubuntu using node v4.5. Check the issue queue for updates or to contribute
 improvements!
 
 1. Install the [C/C++ Tableau SDK](https://onlinehelp.tableau.com/current/api/sdk/en-us/help.htm#SDK/tableau_sdk_installing.htm)
