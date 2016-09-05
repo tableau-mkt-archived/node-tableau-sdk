@@ -56,11 +56,33 @@ var _ = require('underscore'),
       14: 'Duration',
       15: 'CharString',
       16: 'UnicodeString'
+    },
+    setMethod: {
+      7: 'setLongInteger',
+      10: 'setDouble',
+      11: 'setBoolean',
+      12: 'setDate',
+      13: 'setDateTime',
+      14: 'setDuration',
+      15: 'setCharString',
+      16: 'setUnicodeString'
+    },
+    wdcType: {
+      'Duration': 'int',
+      'Integer': 'int',
+      'Double': 'float',
+      'Boolean': 'bool',
+      'Date': 'date',
+      'DateTime': 'datetime',
+      'UnicodeString': 'string',
+      'CharString': 'string'
     }
   },
   smune = {
     type: _.invert(enums.type),
-    collation: _.invert(enums.collation)
+    collation: _.invert(enums.collation),
+    setMethod: _.invert(enums.setMethod),
+    wdcType: _.invert(enums.wdcType)
   };
 
 module.exports = {
@@ -75,5 +97,17 @@ module.exports = {
   },
   collationName: function(collation) {
     return enums.collation[collation];
+  },
+  wdcType: function (name) {
+    return parseInt(smune.type[smune.wdcType[name]]);
+  },
+  wdcTypeName: function (type) {
+    return enums.wdcType[enums.type[type]];
+  },
+  typeSetMethod: function (name) {
+    return enums.setMethod[parseInt(smune.type[name])];
+  },
+  typeNameSetMethod: function (type) {
+    return enums.setMethod[type];
   }
 };

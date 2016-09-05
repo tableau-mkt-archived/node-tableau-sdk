@@ -1,17 +1,10 @@
 'use strict';
 
-var tableau = require('../index.js'),
-    serverConnection;
+var TDE = require('../index.js'),
+    extract = new TDE('order-js.tde');
 
-// Create the server connection object.
-serverConnection = tableau.serverConnection();
+// Publish the extract to the myproject project within the 'mysite' site. If the
+// data source already exists, overwrite it.
+extract.publish('http://localhost', 'username', process.env.TABPW, 'mysite', 'myproject', true);
 
-// Connect to the server.
-serverConnection.connect('http://localhost', 'username', 'password', 'siteId');
-
-// Publish order-js.tde to the server under the default project w/name Order-js.
-serverConnection.publishExtract('order-js.tde', 'default', 'Order-js', false);
-
-// Disconnect from the server and close the connection.
-serverConnection.disconnect();
-serverConnection.close();
+extract.close();

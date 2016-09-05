@@ -1,9 +1,9 @@
 Tableau SDK (Node.js) [![Build Status](https://travis-ci.org/tableau-mkt/node-tableau-sdk.svg?branch=master)](https://travis-ci.org/tableau-mkt/node-tableau-sdk)
 =====================
 
-The unofficial port of the Tableau SDK (Tableau Data Extract API and Tableau
-Server API) for Node.js. Create Tableau Data Extracts and publish them to
-Tableau Server and Tableau Online using JavaScript!
+The official unofficial port of the Tableau SDK (Tableau Data Extract API and
+Tableau Server API) for Node.js. Create Tableau Data Extracts and publish them
+to Tableau Server and Tableau Online using JavaScript!
 
 
 ## Installation
@@ -21,58 +21,109 @@ improvements!
 ## Usage
 
 Check [the examples folder](/tableau-mkt/node-tableau-sdk/tree/master/examples)
-for sample usage, or see some simple examples below.
+for sample usage, or see some examples below.
 
-The API currently _very_ closely mirrors the C++ API, whose reference docs can
-be [found here](https://onlinehelp.tableau.com/current/api/sdk/en-us/SDK/C++/html/index.html).
+For simplicity, this API borrows the [TableInfo](https://tableau.github.io/webdataconnector/ref/api_ref.html#webdataconnectorapi.tableinfo-1)
+and [ColumnInfo](https://tableau.github.io/webdataconnector/ref/api_ref.html#webdataconnectorapi.columninfo)
+data structures from the Tableau Web Data Connector API.
 
 ### Create an extract and add data
 ```javascript
-var tableau = require('tableau-sdk'),
-    enums = tableau.enums,
-    extract,
-    tableDef,
-    table,
-    row;
+var TDE = require('tableau-sdk'),
+    tableDefinition,
+    extract;
 
-// Define your two-column table.
-tableDef = tableau.tableDefinition();
-tableDef.addColumn('Product', enums.type('CharString'));
-tableDef.addColumn('Price', enums.type('Double'));
+// Define a two-column table named "Product Prices"
+tableDefinition = {
+  id: 'Extract',
+  defaultAlias: 'Product Prices',
+  columns: [
+    {id: 'Product', dataType: 'string'},
+    {id: 'Price', dataType: 'float'}
+  ]
+};
 
-// Create an extract at /path/to/your.tde
-extract = new tableau.dataExtract('/path/to/your.tde');
+// Instantiate a new extract using the definition from above.
+extract = new TDE('/path/to/your.tde', tableDefinition);
 
-// Add your table definition to the extract.
-table = extract.addTable('Extract', tableDef);
-
-// Create a row of data.
-row = tableau.tableRow(tableDef);
-row.setCharString(0, '12 oz Latte');
-row.setDouble(1, 3.99);
-
-// Insert the row into the extract.
-table.insert(row);
+// Insert data into the extract.
+extract.insert({
+  Price: 3.99,
+  Product: '12 oz Latte'
+});
 
 // Close the extract.
 extract.close();
 ```
 
-### Publish a TDE to Tableau Server
+### Open an existing extract and add data
 ```javascript
-var tableau = require('tableau-sdk'),
-    serverConnection;
+var TDE = require('tableau-sdk'),
+    extract;
 
-// Instantiate the server connection.
-serverConnection = tableau.serverConnection();
+// Open an extract that already exists.
+extract = new TDE('/path/to/your.tde');
 
-// Connect to the server.
-serverConnection.connect('http://localhost', 'username', 'password', 'siteId');
+// Insert data. Arrays are okay too.
+extract.insert([
+  '12 oz Americano',
+  2.95
+]);
 
-// Publish your.tde to the server under the default project, named My-TDE.
-serverConnection.publishExtract('/path/to/your.tde', 'default', 'My-TDE', false);
-
-// Disconnect from the server and close the connection.
-serverConnection.disconnect();
-serverConnection.close();
+extract.close();
 ```
+
+### Publish an extract to Tableau Server
+```javascript
+var TDE = require('tableau-sdk'),
+    extract;
+
+// Open a reference to the TDE.
+extract = new TDE('/path/to/Your DataSource.tde', tableDefinition);
+
+// Publish the extract to your Server instance under the default project and the
+// default site. The name of the data source will either be the name provided on
+// the "defaultAlias" property of the table definition or "Your DataSource" will
+// be parsed from the TDE name/path.
+try {
+  extract.publish('https://your-corp.internal', 'yourUser', process.env.TABPW);
+}
+catch (err) {
+  console.error('There was a problem publishing the extract to Server:');
+  console.error(err);
+}
+```
+
+
+## Advanced usage (native APIs)
+
+This API provides a thin wrapper around the native C/C++ Tableau SDK that
+handles most use-cases. If you have more advanced use-cases (for example, if you
+need to publish to Tableau Server through a proxy, or if you need certain
+columns in your extract to be collated a certain way), it's possible for you to
+more directly interface with the native C/C++ API.
+
+In those cases, the following static methods are available for you on the main
+SDK object:
+
+```javascript
+var tableau = require('tableau-sdk');
+
+// @see https://onlinehelp.tableau.com/current/api/sdk/en-us/SDK/C++/html/class_tableau_1_1_extract.html
+tableau.dataExtract;
+
+// @see https://onlinehelp.tableau.com/current/api/sdk/en-us/SDK/C++/html/class_tableau_1_1_table_definition.html
+tableau.tableDefinition;
+
+// @see https://onlinehelp.tableau.com/current/api/sdk/en-us/SDK/C++/html/class_tableau_1_1_row.html
+tableau.tableRow;
+
+// @see https://onlinehelp.tableau.com/current/api/sdk/en-us/SDK/C++/html/class_tableau_1_1_server_connection.html
+tableau.serverConnection;
+
+// Methods for converting between C/C++ and JS type constants.
+tableau.enums;
+```
+
+See [advanced examples](/tableau-mkt/node-tableau-sdk/tree/master/examples/advanced)
+for more details. You may also wish to refer to the [C++ API reference docs](https://onlinehelp.tableau.com/current/api/sdk/en-us/SDK/C++/html/index.html).
