@@ -37,13 +37,10 @@ var TDE = require('tableau-sdk'),
 tableDefinition = {
   id: 'Extract',
   defaultAlias: 'Product Prices',
-  columns: [{
-    id: 'Product',
-    dataType: 'string'
-  }, {
-    id: 'Price',
-    dataType: 'float'
-  }]
+  columns: [
+    {id: 'Product', dataType: 'string'},
+    {id: 'Price', dataType: 'float'}
+  ]
 };
 
 // Instantiate a new extract using the definition from above.
