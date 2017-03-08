@@ -129,7 +129,7 @@ describe('wrapper', function () {
         -42,
         1.337,
         '2016-01-01',
-        '2015-09-23 12:23pm'
+        '2015-09-23 12:23'
       ]);
       extract.close();
       afterSize = fs.statSync(expectedPath)['size'];
@@ -195,7 +195,7 @@ describe('wrapper', function () {
         null,
         1,
         '2016-01-01',
-        '2015-09-23 12:23pm'
+        '2015-09-23 12:23'
       ]]);
       extract.close();
       afterSize = fs.statSync(expectedPath)['size'];
