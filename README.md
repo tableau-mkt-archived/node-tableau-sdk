@@ -9,12 +9,14 @@ to Tableau Server and Tableau Online using JavaScript!
 ## Installation
 
 __Warning__: Under active development. Currently only known to work on OSX and
-Ubuntu using node v4.5. Check the issue queue for updates or to contribute
-improvements!
+Ubuntu using LTS versions of node (v4, v6). Check the issue queue for updates or
+to contribute improvements!
 
 1. Install the [C/C++ Tableau SDK](https://onlinehelp.tableau.com/current/api/sdk/en-us/help.htm#SDK/tableau_sdk_installing.htm)
    for your platform,
 1. You may need to install node-gyp (`npm install node-gyp -g`)
+1. If you're on OS X, be sure XCode and command line tools are installed. You
+   may need to run `xcode-select --install`
 1. Pull the SDK from npm. `npm install tableau-sdk --save`,
 
 
