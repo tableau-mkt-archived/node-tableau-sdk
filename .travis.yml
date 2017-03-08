@@ -16,6 +16,8 @@ os:
   - linux
   - osx
 
+osx_image: xcode8.2
+
 env:
   matrix:
     - TABLEAU_SDK_VERSION=9-3-0
