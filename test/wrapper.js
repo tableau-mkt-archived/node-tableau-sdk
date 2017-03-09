@@ -36,7 +36,7 @@ describe('wrapper', function () {
       extract;
 
   // These tests actually read/write from/to disk. Account for slowness here.
-  this.timeout(10000);
+  this.timeout(20000);
 
   before(function() {
     // Ensure we have a place to put test extracts.
