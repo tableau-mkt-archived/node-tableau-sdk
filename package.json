@@ -13,7 +13,7 @@
     "mocha": "^2.4.5"
   },
   "scripts": {
-    "test": "mocha test/*.js",
+    "test": "mocha --retries 5 test/*.js",
     "install": "node-gyp rebuild"
   },
   "keywords": [
