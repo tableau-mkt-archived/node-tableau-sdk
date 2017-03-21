@@ -25,6 +25,7 @@ describe('tableRow', function () {
     tableDef.addColumn('DurationColumn', enums.type('Duration'));
     tableDef.addColumn('CharStringColumn', enums.type('CharString'));
     tableDef.addColumn('UnicodeStringColumn', enums.type('UnicodeString'));
+    tableDef.addColumn('SpatialColumn', enums.type('Spatial'));
   });
 
   it('creates a table row', function () {
@@ -112,6 +113,17 @@ describe('tableRow', function () {
     tableRow.setString(7, "A quoted string value");
     tableRow.setString(7, '1');
     tableRow.setString(7, false.toString());
+  });
+
+  it('sets spatial values', function () {
+    tableRow = tableau.tableRow(tableDef);
+    tableRow.setSpatial(8, 'POINT (30 10)');
+  });
+
+  it('throws error when inserting invalid spatial values', function () {
+    tableRow = tableau.tableRow(tableDef);
+    expect(tableRow.setSpatial.bind(tableau, 8, 'x,y,z'))
+      .to.throw();
   });
 
   afterEach(function () {

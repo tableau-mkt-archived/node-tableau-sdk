@@ -30,6 +30,9 @@ describe('wrapper', function () {
         }, {
           id: 'testDateTime',
           dataType: 'datetime'
+        }, {
+          id: 'testSpatial',
+          dataType: 'spatial'
         }]
       },
       expectedPath,
@@ -129,7 +132,8 @@ describe('wrapper', function () {
         -42,
         1.337,
         '2016-01-01',
-        '2015-09-23 12:23'
+        '2015-09-23 12:23',
+        'LINESTRING(1 1, 3 3)'
       ]);
       extract.close();
       afterSize = fs.statSync(expectedPath)['size'];
@@ -154,7 +158,8 @@ describe('wrapper', function () {
         testDateTime: '20130208T080910,123',
         testDouble: 0,
         testInt: null,
-        testString: ''
+        testString: '',
+        testSpatial: 'POLYGON((-5 -5, -5 5, 5 5, 5 -5, -5 -5),(3 0, 6 0, 6 3, 3 3, 3 0))'
       });
       extract.close();
       afterSize = fs.statSync(expectedPath)['size'];
@@ -188,14 +193,16 @@ describe('wrapper', function () {
         testDateTime: '2013-02-08 09Z',
         testDouble: -0.0001,
         testInt: 123,
-        testString: 'C'
+        testString: 'C',
+        testSpatial: null
       }, [
         true,
         null,
         null,
         1,
         '2016-01-01',
-        '2015-09-23 12:23'
+        '2015-09-23 12:23',
+        'GEOMETRYCOLLECTION(LINESTRING(1 1, 3 5),POLYGON((-1 -1, -1 -5, -5 -5, -5 -1, -1 -1)))'
       ]]);
       extract.close();
       afterSize = fs.statSync(expectedPath)['size'];
