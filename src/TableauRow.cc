@@ -57,6 +57,7 @@ void Row::Init(Local<Object> exports) {
   NODE_SET_PROTOTYPE_METHOD(tpl, "setDate", SetDate);
   NODE_SET_PROTOTYPE_METHOD(tpl, "setDateTime", SetDateTime);
   NODE_SET_PROTOTYPE_METHOD(tpl, "setDuration", SetDuration);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "setSpatial", SetSpatial);
 
   constructor.Reset(isolate, tpl->GetFunction());
   exports->Set(String::NewFromUtf8(isolate, "Row"), tpl->GetFunction());
@@ -196,6 +197,20 @@ void Row::SetDuration(const FunctionCallbackInfo<Value>& args) {
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
   obj->nativeRow_->SetDuration(columnNumber, day, hour, min, sec, frac);
+}
+
+void Row::SetSpatial(const FunctionCallbackInfo<Value>& args) {
+  int columnNumber(args[0]->IntegerValue());
+  String::Utf8Value v8String(args[1]->ToString());
+  string stringValue = string(*v8String);
+
+  Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
+  try {
+    obj->nativeRow_->SetSpatial(columnNumber, stringValue);
+  }
+  catch (const Tableau::TableauException& e) {
+    THROW_TABLEAU_EXCEPTION(e);
+  }
 }
 
 }

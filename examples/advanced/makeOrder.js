@@ -18,6 +18,7 @@ var makeTableDefinition = function() {
   def.addColumn('Taxed', enums.type('Boolean'));
   def.addColumn('Expiration Date', enums.type('Date'));
   def.addColumnWithCollation('Produkt', enums.type('CharString'), enums.collation('de'));
+  def.addColumn('Destination', enums.type('Spatial'));
   return def;
 };
 
@@ -37,7 +38,7 @@ var printTableDefinition = function(def) {
       enums.collationName(def.getColumnCollation(i))
     );
   }
-}
+};
 
 /**
  * Insert a few rows of data.
@@ -54,13 +55,14 @@ var insertData = function(table) {
   row.setDouble(3, 1.08); // Price
   row.setDate(6, 2029, 1, 1); // Expiration Date
   row.setCharString(7, 'Böhnen'); // Produkt
+  raw.setSpatial(8, 'POINT (30 10)'); // Destination
 
   for (i = 0; i < 10; i++) {
     row.setInteger(4, i * 10); // Quantity
     row.setBoolean(5, i % 2 === 1); // Taxed
     table.insert(row);
   }
-}
+};
 
 var extract = new tableau.dataExtract('order-js.tde'),
     table,

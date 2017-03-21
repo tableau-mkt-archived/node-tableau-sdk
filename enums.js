@@ -55,7 +55,8 @@ var _ = require('underscore'),
       13: 'DateTime',
       14: 'Duration',
       15: 'CharString',
-      16: 'UnicodeString'
+      16: 'UnicodeString',
+      17: 'Spatial'
     },
     setMethod: {
       7: 'setLongInteger',
@@ -65,7 +66,8 @@ var _ = require('underscore'),
       13: 'setDateTime',
       14: 'setDuration',
       15: 'setCharString',
-      16: 'setUnicodeString'
+      16: 'setUnicodeString',
+      17: 'setSpatial'
     },
     wdcType: {
       'Duration': 'int',
@@ -75,7 +77,8 @@ var _ = require('underscore'),
       'Date': 'date',
       'DateTime': 'datetime',
       'UnicodeString': 'string',
-      'CharString': 'string'
+      'CharString': 'string',
+      'Spatial': 'spatial'
     }
   },
   smune = {

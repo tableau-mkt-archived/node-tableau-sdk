@@ -27,6 +27,9 @@ tableDefinition = {
   }, {
     id: 'Expiration Date',
     dataType: 'date'
+  }, {
+    id: 'Destination',
+    dataType: 'spatial'
   }]
 };
 
@@ -44,7 +47,8 @@ for (i = 0; i < 10; i++) {
     Price: 1.08,
     Quantity: i * 10,
     Taxed: i % 2 === 1,
-    'Expiration Date': '2029-01-01'
+    'Expiration Date': '2029-01-01',
+    Destination: 'POINT (30 10)'
   });
 }
 

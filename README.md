@@ -22,12 +22,14 @@ to contribute improvements!
 
 ## Usage
 
-Check [the examples folder](/tableau-mkt/node-tableau-sdk/tree/master/examples)
+Check [the examples folder](https://github.com/tableau-mkt/node-tableau-sdk/tree/master/examples)
 for sample usage, or see some examples below.
 
 For simplicity, this API borrows the [TableInfo](https://tableau.github.io/webdataconnector/ref/api_ref.html#webdataconnectorapi.tableinfo-1)
 and [ColumnInfo](https://tableau.github.io/webdataconnector/ref/api_ref.html#webdataconnectorapi.columninfo)
-data structures from the Tableau Web Data Connector API.
+data structures from the Tableau Web Data Connector API. In addition to the data
+types supported by the WDC API, you may specify a column with `dataType` set to
+`spatial` for your spatial data needs.
 
 ### Create an extract and add data
 ```javascript
@@ -127,5 +129,5 @@ tableau.serverConnection;
 tableau.enums;
 ```
 
-See [advanced examples](/tableau-mkt/node-tableau-sdk/tree/master/examples/advanced)
+See [advanced examples](https://github.com/tableau-mkt/node-tableau-sdk/tree/master/examples/advanced)
 for more details. You may also wish to refer to the [C++ API reference docs](https://onlinehelp.tableau.com/current/api/sdk/en-us/SDK/C++/html/index.html).
