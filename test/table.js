@@ -27,7 +27,7 @@ describe('table', function () {
     process.env['TAB_SDK_LOGDIR'] = targetDir;
 
     // Create an extract fixture.
-    expectedPath = targetDir + '/extract-fixture.tde';
+    expectedPath = targetDir + '/extract-fixture.hyper';
     extract = tableau.dataExtract(expectedPath);
     tableDef = tableau.tableDefinition();
     tableDef.setDefaultCollation(enums.collation('en_US'));

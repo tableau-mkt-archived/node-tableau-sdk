@@ -55,7 +55,10 @@ describe('serverConnection', function () {
     }
 
     // Delete any log files that have been created.
-    fs.unlinkSync(targetDir + '/TableauSDKServer.log');
+    try {
+      fs.unlinkSync(targetDir + '/TableauSDKServer.log');
+    }
+    catch (e) {}
   });
 
   after(function () {
