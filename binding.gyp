@@ -8,7 +8,7 @@
       "target_name": "tableau",
       "sources": [
         "src/node-tde.cc",
-        "src/TableauExtract.cc",
+        "src/TableauHyperExtract.cc",
         "src/TableauTable.cc",
         "src/TableauTableDefinition.cc",
         "src/TableauRow.cc",
@@ -43,7 +43,7 @@
             "link_settings": {
               "libraries": [
                 "-lTableauCommon",
-                "-lTableauExtract",
+                "-lTableauHyperExtract",
                 "-lTableauServer"
               ],
               "ldflags": [
@@ -64,7 +64,7 @@
               "OTHER_LDFLAGS": [
                 "-stdlib=libc++",
                 "-framework TableauCommon",
-                "-framework TableauExtract",
+                "-framework TableauHyperExtract",
                 "-framework TableauServer"
               ],
               "MACOSX_DEPLOYMENT_TARGET": "10.7",
