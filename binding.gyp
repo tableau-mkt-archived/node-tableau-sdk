@@ -40,6 +40,9 @@
               "-I/usr/include"
               "-std=c++0x"
             ],
+            "include_dirs+": [
+              "<!@(node -p \"require('fs').readdirSync('/usr/include/c++').map(f=>'/usr/include/c++/' + f + ' /usr/include/c++/' + f + '/bits')[0]\")"
+            ],
             "link_settings": {
               "libraries": [
                 "-lTableauCommon",
