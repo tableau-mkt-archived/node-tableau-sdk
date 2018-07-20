@@ -2,12 +2,6 @@
 #include "TableauTable.h"
 #include "TableauException.h"
 
-#if defined(__APPLE__) && defined(__MACH__)
-#include <TableauExtract/TableauExtract_cpp.h>
-#else
-#include "TableauExtract_cpp.h"
-#endif
-
 namespace NodeTde {
 
 using v8::Function;

@@ -1,5 +1,5 @@
 #include <node.h>
-#include "TableauExtract.h"
+#include "TableauHyperExtract.h"
 #include "TableauTableDefinition.h"
 #include "TableauRow.h"
 #include "TableauServerConnection.h"
