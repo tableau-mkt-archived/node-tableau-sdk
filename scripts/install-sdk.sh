@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOCAL_SDK_VERSION=${TABLEAU_SDK_VERSION:-10-5-0}
+LOCAL_SDK_VERSION=${TABLEAU_SDK_VERSION:-2018-1-3}
 
 # Install the SDK for linux
 if [ $TRAVIS_OS_NAME == 'linux' ]; then
@@ -12,5 +12,5 @@ fi
 if [ $TRAVIS_OS_NAME == 'osx' ]; then
   wget --directory-prefix=$HOME/tableau-c-sdk https://downloads.tableau.com/tssoftware/extractapi-${LOCAL_SDK_VERSION}.dmg
   sudo hdiutil attach $HOME/tableau-c-sdk/extractapi-${LOCAL_SDK_VERSION}.dmg
-  sudo ditto /Volumes/Hyper\ Extract\ API/Frameworks/ /Library/Frameworks/
+  sudo ditto /Volumes/Tableau\ Hyper\ Extract\ API/Frameworks/ /Library/Frameworks/
 fi
