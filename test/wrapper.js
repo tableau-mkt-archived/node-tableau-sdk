@@ -157,7 +157,7 @@ describe('wrapper', function () {
       beforeSize = fs.statSync(expectedPath)['size'];
 
       // Attempt to insert a row via an object of data.
-      for (i = 0; i < 1000; i++) {
+      for (i = 0; i < 2000; i++) {
         randomDate = new Date();
         randomDate.setFullYear(Math.round(Math.random() * 10) + 2010);
 
@@ -198,7 +198,7 @@ describe('wrapper', function () {
       beforeSize = fs.statSync(expectedPath)['size'];
 
       // Attempt to insert multiple rows via in either format.
-      for (i = 0; i < 500; i++) {
+      for (i = 0; i < 1000; i++) {
         extract.insertMultiple([{
           testBool: null,
           testDate: '2013W065',
