@@ -27,18 +27,6 @@
         [
           "OS==\"linux\"",
           {
-            "cflags+": [
-              "-std=c++11",
-              "-stdlib=libc++"
-            ],
-            "cflags_c+": [
-              "-std=c++11",
-              "-stdlib=libc++"
-            ],
-            "cflags_cc+": [
-              "-I/usr/include"
-              "-std=c++0x"
-            ],
             "link_settings": {
               "libraries": [
                 "-lTableauCommon",
