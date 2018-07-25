@@ -12,7 +12,6 @@
         "src/TableauTable.cc",
         "src/TableauTableDefinition.cc",
         "src/TableauRow.cc",
-        "src/TableauServerConnection.cc"
       ],
       "cflags": [
         "-std=c++11",
@@ -40,14 +39,10 @@
               "-I/usr/include"
               "-std=c++0x"
             ],
-            "include_dirs+": [
-              "<!@(node -p \"require('fs').readdirSync('/usr/include/c++').map(f=>'/usr/include/c++/' + f + ' /usr/include/c++/' + f + '/bits')[0]\")"
-            ],
             "link_settings": {
               "libraries": [
                 "-lTableauCommon",
                 "-lTableauHyperExtract",
-                "-lTableauServer"
               ],
               "ldflags": [
                 "-L/usr/lib64/tableausdk",
@@ -68,7 +63,6 @@
                 "-stdlib=libc++",
                 "-framework TableauCommon",
                 "-framework TableauHyperExtract",
-                "-framework TableauServer"
               ],
               "MACOSX_DEPLOYMENT_TARGET": "10.7",
               "GCC_ENABLE_CPP_EXCEPTIONS": "YES"

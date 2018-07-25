@@ -10,14 +10,14 @@ addons:
       - clang
 
 node_js:
-  - '4'
   - '6'
+  - '8'
 
 os:
   - linux
   - osx
 
-osx_image: xcode8.2
+osx_image: xcode9.4
 
 env:
   matrix:

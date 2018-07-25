@@ -235,28 +235,6 @@ describe('wrapper', function () {
 
   });
 
-  describe('Server', function () {
-
-    // @todo Actual test of connection depends on mocking Tableau Server...
-
-    it('throws error when connecting with invalid credentials', function () {
-      expectedPath = targetDir + '/mocha-server-invalid-creds.hyper';
-      extract = new tableau(expectedPath, tableDef);
-
-      expect(extract.publish.bind(extract, 'https://10ay.online.tableau.com', 'testUser', 'testPass'))
-        .to.throw();
-    });
-
-    afterEach(function () {
-      // Delete any log files that have been created.
-      try {
-        fs.unlinkSync(targetDir + '/TableauSDKServer.log');
-      }
-      catch (e) {}
-    });
-
-  });
-
   afterEach(function () {
     // Close any table definitions that were created.
     if (tableDef && tableDef.close) {
