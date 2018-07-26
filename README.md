@@ -1,4 +1,4 @@
-Tableau SDK (Node.js) [![Build Status](https://travis-ci.org/tableau-mkt/node-tableau-sdk.svg?branch=master)](https://travis-ci.org/tableau-mkt/node-tableau-sdk)
+Tableau SDK (Node.js) [![Build Status](https://travis-ci.org/tableau-mkt/node-tableau-sdk.svg?branch=0.x)](https://travis-ci.org/tableau-mkt/node-tableau-sdk)
 =====================
 
 The official unofficial port of the Tableau SDK (Tableau Data Extract API and
