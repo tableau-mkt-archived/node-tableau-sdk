@@ -1,8 +1,4 @@
 {
-'make_global_settings': [
-    ['CXX','/usr/bin/clang++'],
-    ['LINK','/usr/bin/clang++'],
-  ],
   "targets": [
     {
       "target_name": "tableau",
@@ -15,7 +11,6 @@
       ],
       "cflags": [
         "-std=c++11",
-        "-stdlib=libc++"
       ],
       "cflags!": [
         "-fno-exceptions"
@@ -45,14 +40,13 @@
             "xcode_settings": {
               "OTHER_CPLUSPLUSFLAGS": [
                 "-std=c++11",
-                "-stdlib=libc++"
               ],
               "OTHER_LDFLAGS": [
                 "-stdlib=libc++",
                 "-framework TableauCommon",
                 "-framework TableauHyperExtract",
               ],
-              "MACOSX_DEPLOYMENT_TARGET": "10.7",
+              "MACOSX_DEPLOYMENT_TARGET": "10.9",
               "GCC_ENABLE_CPP_EXCEPTIONS": "YES"
             }
           }
