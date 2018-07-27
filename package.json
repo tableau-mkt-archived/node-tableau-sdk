@@ -1,7 +1,7 @@
 {
   "name": "tableau-sdk",
   "version": "0.3.0",
-  "description": "Create extracts and publish extracts to a Tableau Server using Node.js.",
+  "description": "Create Hyper extracts and use them in Tableau Products using Node.js.",
   "main": "index.js",
   "dependencies": {
     "moment": "^2.14.1",
@@ -20,7 +20,7 @@
     "tableau",
     "extract",
     "api",
-    "tde",
+    "hyper",
     "data"
   ],
   "author": {

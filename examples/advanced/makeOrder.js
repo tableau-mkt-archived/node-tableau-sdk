@@ -64,7 +64,7 @@ var insertData = function(table) {
   }
 };
 
-var extract = new tableau.dataExtract('order-js.tde'),
+var extract = new tableau.dataExtract('order-js.hyper'),
     table,
     tableDef;
 
