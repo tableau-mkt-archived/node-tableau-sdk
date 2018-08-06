@@ -29,7 +29,7 @@ tableDefinition = {
     dataType: 'date'
   }, {
     id: 'Destination',
-    dataType: 'spatial'
+    dataType: 'geometry'
   }]
 };
 
