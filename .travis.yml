@@ -26,7 +26,7 @@ before_install:
   - ./scripts/install-sdk.sh
 
 install:
-  - npm install --verbose
+  - npm install
 
 script:
   - export MALLOC_CHECK_=1 # @todo: Fix double free / corruption error and remove this line.
