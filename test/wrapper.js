@@ -32,7 +32,7 @@ describe('wrapper', function () {
           dataType: 'datetime'
         }, {
           id: 'testSpatial',
-          dataType: 'spatial'
+          dataType: 'geometry'
         }]
       },
       expectedPath,

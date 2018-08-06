@@ -55,7 +55,7 @@ var insertData = function(table) {
   row.setDouble(3, 1.08); // Price
   row.setDate(6, 2029, 1, 1); // Expiration Date
   row.setCharString(7, 'Böhnen'); // Produkt
-  raw.setSpatial(8, 'POINT (30 10)'); // Destination
+  row.setSpatial(8, 'POINT (30 10)'); // Destination
 
   for (i = 0; i < 10; i++) {
     row.setInteger(4, i * 10); // Quantity

@@ -27,8 +27,9 @@ for sample usage, or see some examples below.
 For simplicity, this API borrows the [TableInfo](https://tableau.github.io/webdataconnector/docs/api_ref.html#webdataconnectorapi.tableinfo-1)
 and [ColumnInfo](https://tableau.github.io/webdataconnector/docs/api_ref.html#webdataconnectorapi.columninfo)
 data structures from the Tableau Web Data Connector API. In addition to the data
-types supported by the WDC API, you may specify a column with `dataType` set to
-`spatial` for your spatial data needs.
+types supported by the WDC API. Note, while the underlying C++ Extract API uses
+`Spatial` to indicate spatial data types, the WDC API uses `geometry`. We follow
+that convention here too.
 
 ### Create an extract and add data
 ```javascript
