@@ -78,7 +78,7 @@ var _ = require('underscore'),
       'DateTime': 'datetime',
       'UnicodeString': 'string',
       'CharString': 'string',
-      'Spatial': 'spatial'
+      'Spatial': 'geometry'
     }
   },
   smune = {
