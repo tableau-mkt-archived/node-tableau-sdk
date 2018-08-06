@@ -1,6 +1,6 @@
 'use strict';
 
-var TDE = require('../index.js'),
+var ExtractApi = require('../index.js'),
     tableDefinition,
     extract,
     i;
@@ -33,8 +33,8 @@ tableDefinition = {
   }]
 };
 
-// Instantiate an extract in the current directory named orders-js.tde.
-extract = new TDE('order-js.tde', tableDefinition);
+// Instantiate an extract in the current directory named orders-js.hyper.
+extract = new ExtractApi('order-js.hyper', tableDefinition);
 
 // For sanity, print out the extract's table definition.
 console.log(extract.getDefinition());

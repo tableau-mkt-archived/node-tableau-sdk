@@ -194,56 +194,10 @@ Extract.prototype.insertMultiple = function insertMultiple(rows) {
   }
 };
 
-/**
- * Publishes the extract to a Tableau Server instance as the given user within
- * the given site and project. If a "defaultAlias" property was passed in on the
- * extract definition object, it will be used as the data source name when it is
- * uploaded to the site/project. If none was provided, a name will be parsed
- * from the extract's file name.
- *
- * @param {String} host
- *   Fully qualified URL of the server to publish to.
- * @param {String} user
- *   The username of the user to sign in as. The user must have permissions to
- *   publish to the specified site.
- * @param {String} password
- *   The password of the user to sign in as.
- * @param {String|null} siteId
- *   Optional. The ID of the site under which this TDE will be available. If no
- *   siteId is given, the default site will be used.
- * @param {String|null} project
- *   Optional. The name of the project to publish the TDE to. If no project name
- *   is given, the default project will be used.
- * @param {Boolean|null} overwrite
- *   Optional. A flag indicating whether or not we should overwrite an existing
- *   TDE by the same name in the same site/project. Defaults to false.
- */
-Extract.prototype.publish = function publish(host, user, password, siteId, project, overwrite) {
-  var serverConnection = tableau.ServerConnection(),
-      name = priv.definition.defaultAlias;
-
-  // Set up defaults.
-  siteId = siteId == null ? '' : siteId;
-  project = project == null ? 'default' : project;
-  name = typeof name === 'undefined' ? priv.path.match(/([a-zA-Z0-9_\-\s]+).tde$/)[1] : name;
-  overwrite = overwrite == null ? false : overwrite;
-
-  // Connect to the server.
-  serverConnection.connect(host, user, password, siteId);
-
-  // Publish your.tde to the server under the default project, named My-TDE.
-  serverConnection.publishExtract(priv.path, project, name, overwrite);
-
-  // Disconnect from the server and close the connection.
-  serverConnection.disconnect();
-  serverConnection.close();
-};
-
 // Make raw C++ APIs available for advanced use-cases / legacy usage.
 Extract.dataExtract = tableau.Extract;
 Extract.tableDefinition = tableau.TableDefinition;
 Extract.tableRow = tableau.Row;
-Extract.serverConnection = tableau.ServerConnection;
 Extract.enums = require('./enums.js');
 
 module.exports = Extract;

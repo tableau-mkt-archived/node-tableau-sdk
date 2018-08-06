@@ -6,9 +6,9 @@
 #include <node_object_wrap.h>
 
 #if defined(__APPLE__) && defined(__MACH__)
-#include <TableauExtract/TableauExtract_cpp.h>
+#include <TableauHyperExtract/TableauHyperExtract_cpp.h>
 #else
-#include "TableauExtract_cpp.h"
+#include "TableauHyperExtract_cpp.h"
 #endif
 
 namespace NodeTde {

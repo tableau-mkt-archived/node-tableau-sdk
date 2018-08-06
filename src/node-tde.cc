@@ -1,8 +1,7 @@
 #include <node.h>
-#include "TableauExtract.h"
+#include "TableauHyperExtract.h"
 #include "TableauTableDefinition.h"
 #include "TableauRow.h"
-#include "TableauServerConnection.h"
 
 namespace NodeTde {
 
@@ -13,7 +12,6 @@ void InitAll(Local<Object> exports) {
   Extract::Init(exports);
   TableDefinition::Init(exports);
   Row::Init(exports);
-  ServerConnection::Init(exports);
 }
 
 NODE_MODULE(tableau, InitAll)

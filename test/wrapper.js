@@ -52,7 +52,7 @@ describe('wrapper', function () {
   describe('Extract', function () {
 
     it('creates an extract file from definition', function () {
-      expectedPath = targetDir + '/mocha-from-definition.tde';
+      expectedPath = targetDir + '/mocha-from-definition.hyper';
       extract = new tableau(expectedPath, tableDef);
 
       // Ensure the TDE was created.
@@ -63,7 +63,7 @@ describe('wrapper', function () {
     });
 
     it('can open existing extract even with definition', function () {
-      expectedPath = targetDir + '/mocha-existing-with-definition.tde';
+      expectedPath = targetDir + '/mocha-existing-with-definition.hyper';
 
       // Create extract via native API.
       tableau.dataExtract(expectedPath).close();
@@ -89,7 +89,7 @@ describe('wrapper', function () {
           existingTde,
           nativeTableDef;
 
-      expectedPath = targetDir + '/mocha-existing-sans-definition.tde';
+      expectedPath = targetDir + '/mocha-existing-sans-definition.hyper';
 
       // Create extract via native API.
       existingTde = tableau.dataExtract(expectedPath);
@@ -118,23 +118,26 @@ describe('wrapper', function () {
 
     it('can insert row when passed as array', function () {
       var beforeSize,
-          afterSize;
+          afterSize,
+          i;
 
       // Create a new extract file.
-      expectedPath = targetDir + '/row-from-array.tde';
+      expectedPath = targetDir + '/row-from-array.hyper';
       extract = new tableau(expectedPath, tableDef);
       beforeSize = fs.statSync(expectedPath)['size'];
 
       // Attempt to insert a row via an array of data.
-      extract.insert([
-        true,
-        'A string',
-        -42,
-        1.337,
-        '2016-01-01',
-        '2015-09-23 12:23',
-        'LINESTRING(1 1, 3 3)'
-      ]);
+      for (i = 0; i < 1000; i++) {
+        extract.insert([
+          Math.random() >= 0.5,
+          Math.random().toString(36).substring(7),
+          Math.round(Math.random() * -100),
+          1 + Math.random(),
+          '2016-01-01',
+          '2015-09-23 12:23',
+          'LINESTRING(1 1, 3 3)'
+        ]);
+      }
       extract.close();
       afterSize = fs.statSync(expectedPath)['size'];
 
@@ -144,23 +147,30 @@ describe('wrapper', function () {
 
     it('can insert row when passed as object', function () {
       var beforeSize,
-          afterSize;
+          afterSize,
+          randomDate,
+          i;
 
       // Create a new extract file.
-      expectedPath = targetDir + '/row-from-array.tde';
+      expectedPath = targetDir + '/row-from-array.hyper';
       extract = new tableau(expectedPath, tableDef);
       beforeSize = fs.statSync(expectedPath)['size'];
 
       // Attempt to insert a row via an object of data.
-      extract.insert({
-        testBool: false,
-        testDate: '2013-04-21 23:07:01',
-        testDateTime: '20130208T080910,123',
-        testDouble: 0,
-        testInt: null,
-        testString: '',
-        testSpatial: 'POLYGON((-5 -5, -5 5, 5 5, 5 -5, -5 -5),(3 0, 6 0, 6 3, 3 3, 3 0))'
-      });
+      for (i = 0; i < 2000; i++) {
+        randomDate = new Date();
+        randomDate.setFullYear(Math.round(Math.random() * 10) + 2010);
+
+        extract.insert({
+          testBool: Math.random() >= 0.5,
+          testDate: randomDate.getFullYear() + '-0' + Math.round(1 + (Math.random() * 5)) + '-' + Math.round(10 + (Math.random() * 10)) + ' 23:07:01',
+          testDateTime: randomDate.getFullYear() + '0208T080910,123',
+          testDouble: Math.random() >= 0.5 ? 0 : Math.random() * 100,
+          testInt: Math.random() >= 0.5 ? null : Math.round(Math.random() * 100),
+          testString: Math.random() >= 0.5 ? '' : Math.random().toString(36).substring(7),
+          testSpatial: 'POLYGON((-5 -5, -5 5, 5 5, 5 -5, -5 -5),(3 0, 6 0, 6 3, 3 3, 3 0))'
+        });
+      }
       extract.close();
       afterSize = fs.statSync(expectedPath)['size'];
 
@@ -169,7 +179,7 @@ describe('wrapper', function () {
     });
 
     it('throws error when inserting invalid rows', function () {
-      expectedPath = targetDir + '/error-invalid-row.tde';
+      expectedPath = targetDir + '/error-invalid-row.hyper';
       extract = new tableau(expectedPath, tableDef);
 
       // This is an error we throw rather than the SDK, so check the text.
@@ -179,31 +189,34 @@ describe('wrapper', function () {
 
     it('can insert multiple rows', function () {
       var beforeSize,
-          afterSize;
+          afterSize,
+          i;
 
       // Create a new extract file.
-      expectedPath = targetDir + '/row-from-array.tde';
+      expectedPath = targetDir + '/row-from-array.hyper';
       extract = new tableau(expectedPath, tableDef);
       beforeSize = fs.statSync(expectedPath)['size'];
 
       // Attempt to insert multiple rows via in either format.
-      extract.insertMultiple([{
-        testBool: null,
-        testDate: '2013W065',
-        testDateTime: '2013-02-08 09Z',
-        testDouble: -0.0001,
-        testInt: 123,
-        testString: 'C',
-        testSpatial: null
-      }, [
-        true,
-        null,
-        null,
-        1,
-        '2016-01-01',
-        '2015-09-23 12:23',
-        'GEOMETRYCOLLECTION(LINESTRING(1 1, 3 5),POLYGON((-1 -1, -1 -5, -5 -5, -5 -1, -1 -1)))'
-      ]]);
+      for (i = 0; i < 1000; i++) {
+        extract.insertMultiple([{
+          testBool: null,
+          testDate: '2013W065',
+          testDateTime: '2013-02-08 09Z',
+          testDouble: -0.0001,
+          testInt: 123,
+          testString: Math.random().toString(36).substring(1),
+          testSpatial: null
+        }, [
+          true,
+          null,
+          null,
+          1,
+          '2016-01-01',
+          '2015-09-23 12:23',
+          'GEOMETRYCOLLECTION(LINESTRING(1 1, 3 5),POLYGON((-1 -1, -1 -5, -5 -5, -5 -1, -1 -1)))'
+        ]]);
+      }
       extract.close();
       afterSize = fs.statSync(expectedPath)['size'];
 
@@ -212,31 +225,12 @@ describe('wrapper', function () {
     });
 
     it('throws error when attempting to insert invalid multiples', function () {
-      expectedPath = targetDir + '/error-invalid-multiple-rows.tde';
+      expectedPath = targetDir + '/error-invalid-multiple-rows.hyper';
       extract = new tableau(expectedPath, tableDef);
 
       // This is an error we throw rather than the SDK, so check the text.
       return expect(extract.insertMultiple.bind(extract, {}))
         .to.throw('Expected an array of several rows.');
-    });
-
-  });
-
-  describe('Server', function () {
-
-    // @todo Actual test of connection depends on mocking Tableau Server...
-
-    it('throws error when connecting with invalid credentials', function () {
-      expectedPath = targetDir + '/mocha-server-invalid-creds.tde';
-      extract = new tableau(expectedPath, tableDef);
-
-      expect(extract.publish.bind(extract, 'https://10ay.online.tableau.com', 'testUser', 'testPass'))
-        .to.throw();
-    });
-
-    afterEach(function () {
-      // Delete any log files that have been created.
-      fs.unlinkSync(targetDir + '/TableauSDKServer.log');
     });
 
   });
