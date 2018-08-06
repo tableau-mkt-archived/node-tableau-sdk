@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOCAL_SDK_VERSION=${TABLEAU_SDK_VERSION:-2018-1-3}
+LOCAL_SDK_VERSION=${TABLEAU_SDK_VERSION:-2018-2-0}
 
 # Install the SDK for linux
 if [ $TRAVIS_OS_NAME == 'linux' ]; then
