@@ -10,11 +10,13 @@
 
 namespace NodeTde {
 
+using v8::Context;
 using v8::Function;
 using v8::FunctionCallbackInfo;
 using v8::FunctionTemplate;
 using v8::Isolate;
 using v8::Local;
+using v8::MaybeLocal;
 using v8::External;
 using v8::Number;
 using v8::Boolean;
@@ -57,6 +59,7 @@ void Extract::Init(Local<Object> exports) {
 
 void Extract::New(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
   // Invoked as constructor: `new Extract(...)`
   if (args.IsConstructCall()) {
@@ -84,7 +87,12 @@ void Extract::New(const FunctionCallbackInfo<Value>& args) {
     const int argc = 1;
     Local<Value> argv[argc] = { args[0] };
     Local<Function> cons = Local<Function>::New(isolate, constructor);
-    args.GetReturnValue().Set(cons->NewInstance(argc, argv));
+    MaybeLocal<Object> maybeResult = cons->NewInstance(context, argc, argv);
+    Local<Object> result;
+
+    if (maybeResult.ToLocal(&result)) {
+      args.GetReturnValue().Set(result);
+    }
   }
 }
 

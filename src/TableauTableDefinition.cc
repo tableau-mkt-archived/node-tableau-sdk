@@ -4,6 +4,7 @@
 
 namespace NodeTde {
 
+using v8::Context;
 using v8::Function;
 using v8::FunctionCallbackInfo;
 using v8::FunctionTemplate;
@@ -72,6 +73,7 @@ void TableDefinition::InitObj(Local<Object> exports) {
 
 void TableDefinition::New(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
   // Invoked as constructor: `new Extract(...)`
   if (args.IsConstructCall()) {
@@ -84,7 +86,7 @@ void TableDefinition::New(const FunctionCallbackInfo<Value>& args) {
     const int argc = 1;
     Local<Value> argv[argc] = { args[0] };
     Local<Function> cons = Local<Function>::New(isolate, constructor);
-    args.GetReturnValue().Set(cons->NewInstance(argc, argv));
+    args.GetReturnValue().Set(cons->NewInstance(context, argc, argv).ToLocalChecked());
   }
 }
 
