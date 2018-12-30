@@ -115,6 +115,14 @@ Extract.prototype.addTable = function (table, definition) {
   instantiateNativeTable(table, definition);
 };
 
+/**
+ * Get the definition of the given table.
+ *
+ * @param {String} table
+ *   Table name. If no table name is provided, "Extract" will be assumed.
+ *
+ * @returns {TableInfo}
+ */
 Extract.prototype.getDefinition = function (table) {
   table = table || defaultTable;
 
@@ -125,6 +133,9 @@ Extract.prototype.getDefinition = function (table) {
   return priv[table].definition;
 };
 
+/**
+ * Closes the extract, writing any new rows to disk and freeing resources.
+ */
 Extract.prototype.close = function () {
   return priv.nativeExtract.close();
 };

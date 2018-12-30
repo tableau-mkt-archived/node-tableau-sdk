@@ -33,7 +33,7 @@ that convention here too.
 
 ### Create an extract and add data
 ```javascript
-var TDE = require('tableau-sdk'),
+let ExtractApi = require('tableau-sdk'),
     tableDefinition,
     extract;
 
@@ -48,7 +48,7 @@ tableDefinition = {
 };
 
 // Instantiate a new extract using the definition from above.
-extract = new TDE('/path/to/your.hyper', tableDefinition);
+extract = new ExtractApi('/path/to/your.hyper', tableDefinition);
 
 // Insert data into the extract.
 extract.insert({
@@ -62,11 +62,11 @@ extract.close();
 
 ### Open an existing extract and add data
 ```javascript
-var TDE = require('tableau-sdk'),
+let ExtractApi = require('tableau-sdk'),
     extract;
 
 // Open an extract that already exists.
-extract = new TDE('/path/to/your.hyper');
+extract = new ExtractApi('/path/to/your.hyper');
 
 // Insert data. Arrays are okay too.
 extract.insert([
@@ -77,13 +77,67 @@ extract.insert([
 extract.close();
 ```
 
+### Create a multi-table extract and add data
+```javascript
+let ExtractApi = require('tableau-sdk'),
+    tables,
+    extract;
+
+// Define a two-column table named "Product Prices"
+tables = {
+  products: {
+    id: 'Products',
+    defaultAlias: 'Products',
+    columns: [
+      {id: 'ProductID', dataType: 'int'},
+      {id: 'Product', dataType: 'string'},
+      {id: 'Price', dataType: 'float'}
+    ]
+  },
+  orders: {
+    id: 'Orders',
+    defaultAlias: 'Product Orders',
+    columns: [
+      {id: 'OrderID', dataType: 'int'},
+      {id: 'ProductID', dataType: 'int'},
+      {id: 'Customer', dataType: 'string'}
+    ]
+  }
+};
+
+// Instantiate a new extract and add your tables.
+extract = new ExtractApi('/path/to/your.hyper');
+extract.addTable('Products', tables.products);
+extract.addTable('Orders', tables.orders);
+
+// Insert data into the Products table.
+extract.insert('Products', [{
+  ProductID: 1,
+  Product: '12 oz Latte',
+  Price: 3.99
+}, {
+  ProductID: 2,
+  Product: '16 oz Latte',
+  Price: 4.99
+}]);
+
+// Insert data into the Orders table.
+extract.insert(tables.orders.id, {
+  OrderID: 1,
+  ProductID: 2,
+  Customer: 'Jane'
+});
+
+// Close the extract.
+extract.close();
+```
+
 ## Advanced usage (native APIs)
 
 This API provides a thin wrapper around the native C/C++ Tableau SDK that
 handles most use-cases. If you have more advanced use-cases (for example, if you
-need to publish to Tableau Server through a proxy, or if you need certain
-columns in your extract to be collated a certain way), it's possible for you to
-more directly interface with the native C/C++ API.
+need certain columns in your extract to be collated a certain way), it's
+possible for you to more directly interface with the native C/C++ API.
 
 In those cases, the following static methods are available for you on the main
 SDK object:
