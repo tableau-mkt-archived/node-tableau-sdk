@@ -1,6 +1,6 @@
 {
   "name": "tableau-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create Hyper extracts and use them in Tableau Products using Node.js.",
   "main": "index.js",
   "dependencies": {
