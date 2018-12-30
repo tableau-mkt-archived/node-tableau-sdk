@@ -11,7 +11,7 @@ describe('wrapper', function () {
   var tableau = require('../index.js'),
       targetDir = './build/test',
       tableDef = {
-        id: 'mocha-test-table',
+        id: 'Extract',
         columns: [{
           id: 'testBool',
           dataType: 'bool'
@@ -50,7 +50,7 @@ describe('wrapper', function () {
     process.env['TAB_SDK_TMPDIR'] = targetDir;
   });
 
-  describe('Extract', function () {
+  describe('Single-Table Extract', function () {
 
     it('creates an extract file from definition', function () {
       expectedPath = targetDir + '/mocha-from-definition.hyper';
@@ -232,6 +232,156 @@ describe('wrapper', function () {
       // This is an error we throw rather than the SDK, so check the text.
       return expect(extract.insertMultiple.bind(extract, {}))
         .to.throw('Expected an array of several rows.');
+    });
+
+  });
+
+  describe('Multi-Table Extract', function () {
+
+    it('creates an extract file with custom table name', function () {
+      var secondTableDef = Object.assign({}, tableDef);
+      secondTableDef.id = 'custom-table';
+
+      expectedPath = targetDir + '/mocha-from-definition-custom-table.hyper';
+      extract = new tableau(expectedPath, secondTableDef);
+
+      // Ensure the TDE was created.
+      expectedPath.should.be.a.file();
+
+      // Also check that definitions match.
+      extract.getDefinition(secondTableDef.id).should.deep.equal(secondTableDef);
+    });
+
+    it('creates an extract file with two tables', function () {
+      var secondTableDef = Object.assign({}, tableDef);
+      secondTableDef.id = 'custom-table';
+
+      expectedPath = targetDir + '/mocha-from-definition-two-tables.hyper';
+      extract = new tableau(expectedPath, tableDef);
+      extract.addTable(secondTableDef.id, secondTableDef);
+
+      // Ensure the TDE was created.
+      expectedPath.should.be.a.file();
+
+      // Also check that definitions match.
+      extract.getDefinition(tableDef.id).should.deep.equal(tableDef);
+      extract.getDefinition(secondTableDef.id).should.deep.equal(secondTableDef);
+
+    });
+
+    it('can open existing multi-table extract without definitions', function () {
+      var expectedDefOne = {
+          id: 'Extract1',
+          columns: [{
+            id: 'columnName1',
+            dataType: 'bool'
+          }]
+        },
+        expectedDefTwo = {
+          id: 'Extract2',
+          columns: [{
+            id: 'columnName2',
+            dataType: 'int'
+          }]
+        },
+        existingTde,
+        nativeTableDef1,
+        nativeTableDef2;
+
+      expectedPath = targetDir + '/mocha-existing-sans-definition-multi.hyper';
+
+      // Create extract via native API.
+      existingTde = tableau.dataExtract(expectedPath);
+      nativeTableDef1 = tableau.tableDefinition();
+      nativeTableDef1.addColumn(expectedDefOne.columns[0].id, tableau.enums.type('Boolean'));
+      nativeTableDef2 = tableau.tableDefinition();
+      nativeTableDef2.addColumn(expectedDefTwo.columns[0].id, tableau.enums.type('Integer'));
+      existingTde.addTable(expectedDefOne.id, nativeTableDef1);
+      existingTde.addTable(expectedDefTwo.id, nativeTableDef2);
+      existingTde.close();
+
+      // Ensure the TDE was created.
+      expectedPath.should.be.a.file();
+
+      // Use wrapper API to open existing extract without a definition.
+      extract = new tableau(expectedPath);
+
+      // Also check that the provided definition is returned.
+      extract.getDefinition(expectedDefOne.id).should.deep.equal(expectedDefOne);
+      extract.getDefinition(expectedDefTwo.id).should.deep.equal(expectedDefTwo);
+    });
+
+    it('can insert rows into multiple tables', function () {
+      var secondTableDef = Object.assign({}, tableDef),
+          i,
+          beforeSize,
+          afterSize;
+
+      // Create a new extract file.
+      secondTableDef.id = 'custom-table';
+      expectedPath = targetDir + '/mocha-insert-multiple-tables.hyper';
+      extract = new tableau(expectedPath, tableDef);
+      beforeSize = fs.statSync(expectedPath)['size'];
+      extract.addTable(secondTableDef.id, secondTableDef);
+
+      // Attempt to insert a rows into multiple tables, one table after another.
+      for (i = 0; i < 1000; i++) {
+        extract.insert(i % 2 === 0 ? tableDef.id : secondTableDef.id, [
+          Math.random() >= 0.5,
+          Math.random().toString(36).substring(7),
+          Math.round(Math.random() * -100),
+          1 + Math.random(),
+          '2016-01-01',
+          '2015-09-23 12:23',
+          'LINESTRING(1 1, 3 3)'
+        ]);
+      }
+      extract.close();
+      afterSize = fs.statSync(expectedPath)['size'];
+
+      // Ensure that the TDE increased in size.
+      return (afterSize > beforeSize).should.be.ok();
+
+    });
+
+    it('can insert multiple rows into multiple tables', function () {
+      var secondTableDef = Object.assign({}, tableDef),
+          beforeSize,
+          afterSize,
+          i;
+
+      // Create a new extract file.
+      secondTableDef.id = 'custom-table';
+      expectedPath = targetDir + '/mocha-insert-multiple-rows-multiple-tables.hyper';
+      extract = new tableau(expectedPath, tableDef);
+      beforeSize = fs.statSync(expectedPath)['size'];
+      extract.addTable(secondTableDef.id, secondTableDef);
+
+      // Attempt to insert multiple rows via in either format.
+      for (i = 0; i < 1000; i++) {
+        extract.insertMultiple(i % 2 === 0 ? tableDef.id : secondTableDef.id, [{
+          testBool: null,
+          testDate: '2013W065',
+          testDateTime: '2013-02-08 09Z',
+          testDouble: -0.0001,
+          testInt: 123,
+          testString: Math.random().toString(36).substring(1),
+          testSpatial: null
+        }, [
+          true,
+          null,
+          null,
+          1,
+          '2016-01-01',
+          '2015-09-23 12:23',
+          'GEOMETRYCOLLECTION(LINESTRING(1 1, 3 5),POLYGON((-1 -1, -1 -5, -5 -5, -5 -1, -1 -1)))'
+        ]]);
+      }
+      extract.close();
+      afterSize = fs.statSync(expectedPath)['size'];
+
+      // Ensure that the TDE increased in size.
+      return (afterSize > beforeSize).should.be.ok();
     });
 
   });

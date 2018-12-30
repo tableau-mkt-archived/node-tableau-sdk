@@ -4,7 +4,8 @@ var tableau = require('./build/Release/tableau'),
     _ = require('underscore'),
     moment = require('moment'),
     enums = require('./enums'),
-    priv = {};
+    priv = {},
+    defaultTable = 'Extract';
 
 /**
  * Given a WDC API TableInfo object, this function will return a native Tableau
@@ -29,15 +30,16 @@ function convertWdcTableDefToTdeApi(def) {
  * return a TableInfo object according to the specifications of the WDC API.
  *
  * @param tableDef
+ * @param tableName
  * @returns {{id: string, columns: Array}}
  */
-function convertTdeApiTableDefToWdc(tableDef) {
+function convertTdeApiTableDefToWdc(tableDef, tableName) {
   var columnCount = tableDef.getColumnCount(),
       template = {id: '', columns: []},
       columnTemplate = {},
       i;
 
-  template.id = 'Extract';
+  template.id = tableName || defaultTable;
 
   for (i = 0; i < columnCount; i++) {
     columnTemplate.dataType = enums.wdcTypeName(tableDef.getColumnType(i));
@@ -50,6 +52,42 @@ function convertTdeApiTableDefToWdc(tableDef) {
 }
 
 /**
+ * Helper function that instantiates and stashes a table for subsequent
+ * use.
+ *
+ * @param table
+ * @param definition
+ */
+function instantiateNativeTable(table, definition) {
+  priv[table] = {};
+  priv[table].tableName = table;
+
+  // If a definition was provided, apply the table definition to the extract.
+  if (definition) {
+    // Convert the given definition to a native table definition object.
+    priv[table].nativeTableDefinition = convertWdcTableDefToTdeApi(definition);
+
+    // If a table exists, open and store a reference to the existing table.
+    if (priv.nativeExtract.hasTable(table)) {
+      priv[table].nativeTable = priv.nativeExtract.openTable(table);
+    }
+    // Otherwise, create the table with the given definition.
+    else {
+      priv[table].nativeTable = priv.nativeExtract.addTable(table, priv[table].nativeTableDefinition);
+    }
+  }
+  else {
+    if (priv.nativeExtract.hasTable(table)) {
+      priv[table].nativeTable = priv.nativeExtract.openTable(table);
+      priv[table].nativeTableDefinition = priv[table].nativeTable.getTableDefinition();
+      definition = convertTdeApiTableDefToWdc(priv[table].nativeTableDefinition, table);
+    }
+  }
+
+  priv[table].definition = definition;
+}
+
+/**
  * Instantiates a new Tableau extract wrapper.
  *
  * @param {String} path
@@ -58,38 +96,46 @@ function convertTdeApiTableDefToWdc(tableDef) {
  * @constructor
  */
 function Extract(path, definition) {
-  priv.tableName = 'Extract';
+  var table = definition && definition.id ? definition.id : defaultTable;
+
   priv.path = path;
   priv.nativeExtract = new tableau.Extract(priv.path);
-
-  // If a definition was provided, apply the table definition to the extract.
-  if (definition) {
-    // Convert the given definition to a native table definition object.
-    priv.nativeTableDefinition = convertWdcTableDefToTdeApi(definition);
-
-    // If a table exists, open and store a reference to the existing table.
-    if (priv.nativeExtract.hasTable(priv.tableName)) {
-      priv.nativeTable = priv.nativeExtract.openTable(priv.tableName);
-    }
-    // Otherwise, create the table with the given definition.
-    else {
-      priv.nativeTable = priv.nativeExtract.addTable(priv.tableName, priv.nativeTableDefinition);
-    }
-  }
-  // Otherwise, get the table definition from the existing TDE.
-  else {
-    priv.nativeTable = priv.nativeExtract.openTable(priv.tableName);
-    priv.nativeTableDefinition = priv.nativeTable.getTableDefinition();
-    definition = convertTdeApiTableDefToWdc(priv.nativeTableDefinition);
-  }
-
-  priv.definition = definition;
+  instantiateNativeTable(table, definition);
 }
 
-Extract.prototype.getDefinition = function () {
-  return priv.definition;
+/**
+ * Adds another table to the Tableau extract.
+ *
+ * @param {String} table
+ *   The name of the table.
+ * @param {TableInfo} definition
+ *   A table definition, in the same format as the Tableau WDC API.
+ */
+Extract.prototype.addTable = function (table, definition) {
+  instantiateNativeTable(table, definition);
 };
 
+/**
+ * Get the definition of the given table.
+ *
+ * @param {String} table
+ *   Table name. If no table name is provided, "Extract" will be assumed.
+ *
+ * @returns {TableInfo}
+ */
+Extract.prototype.getDefinition = function (table) {
+  table = table || defaultTable;
+
+  // If the definition isn't already loaded, try instantiating it.
+  if (!priv[table] || !priv[table].definition) {
+    instantiateNativeTable(table);
+  }
+  return priv[table].definition;
+};
+
+/**
+ * Closes the extract, writing any new rows to disk and freeing resources.
+ */
 Extract.prototype.close = function () {
   return priv.nativeExtract.close();
 };
@@ -98,10 +144,17 @@ Extract.prototype.close = function () {
  * Given an array of row values (or an object, keyed by column IDs), this
  * method appends the given data to the extract.
  *
+ * @param {String} table
  * @param {Array|Object} row
  */
-Extract.prototype.insert = function insert(row) {
-  var tableRow = tableau.Row(priv.nativeTableDefinition),
+Extract.prototype.insert = function insert(table, row) {
+  // Handle backward compatibility for pre-multi-table extracts.
+  if (row === undefined) {
+    row = table;
+    table = defaultTable;
+  }
+
+  var tableRow = tableau.Row(priv[table].nativeTableDefinition),
       tempRow = [],
       rowKey,
       rowIndex,
@@ -123,7 +176,7 @@ Extract.prototype.insert = function insert(row) {
       }
 
       // Find the index of the column with this ID.
-      rowIndex = _.findIndex(priv.definition.columns, function (column) {
+      rowIndex = _.findIndex(priv[table].definition.columns, function (column) {
         return column.id === rowKey;
       });
 
@@ -139,7 +192,7 @@ Extract.prototype.insert = function insert(row) {
 
   for (i = 0; i < row.length; i++) {
     // Determine the set method to use.
-    method = enums.typeNameSetMethod(priv.nativeTableDefinition.getColumnType(i));
+    method = enums.typeNameSetMethod(priv[table].nativeTableDefinition.getColumnType(i));
 
     // If the value is specifically null (or undefined), then set a null value.
     if (row[i] == null) {
@@ -173,15 +226,23 @@ Extract.prototype.insert = function insert(row) {
   }
 
   // Insert the row!
-  priv.nativeTable.insert(tableRow);
+  priv[table].nativeTable.insert(tableRow);
 };
 
 /**
  * Identical to the insert method, but rather than taking a single row, it takes
  * an array of row objects/arrays.
+ *
+ * @param {String} table
  * @param {Array} rows
  */
-Extract.prototype.insertMultiple = function insertMultiple(rows) {
+Extract.prototype.insertMultiple = function insertMultiple(table, rows) {
+  // Handle backward compatibility for pre-multi-table extracts.
+  if (rows === undefined) {
+    rows = table;
+    table = defaultTable;
+  }
+
   var i;
 
   // If the row is not an array, we've got problems.
@@ -190,7 +251,7 @@ Extract.prototype.insertMultiple = function insertMultiple(rows) {
   }
 
   for (i = 0; i < rows.length; i++) {
-    this.insert(rows[i]);
+    this.insert(table, rows[i]);
   }
 };
 
