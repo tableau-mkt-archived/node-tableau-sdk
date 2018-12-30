@@ -11,7 +11,7 @@
     "chai": "^1.10.0",
     "chai-fs": "^0.1.0",
     "fs-extra": "^7.0.1",
-    "mocha": "^2.4.5"
+    "mocha": "^5.2.0"
   },
   "scripts": {
     "test": "mocha --retries 5 test/*.js",
