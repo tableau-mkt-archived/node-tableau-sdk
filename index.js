@@ -52,20 +52,15 @@ function convertTdeApiTableDefToWdc(tableDef, tableName) {
 }
 
 /**
- * Instantiates a new Tableau extract wrapper.
+ * Helper function that instantiates and stashes a table for subsequent
+ * use.
  *
- * @param {String} path
- * @param {TableInfo} definition
- *   An optional table definition, in the same format as the Tableau WDC API.
- * @constructor
+ * @param table
+ * @param definition
  */
-function Extract(path, definition) {
-  var table = definition && definition.id ? definition.id : defaultTable;
-
-  priv.path = path;
-  priv.nativeExtract = new tableau.Extract(priv.path);
+function instantiateNativeTable(table, definition) {
   priv[table] = {};
-  priv[table].tableName = definition && definition.id ? definition.id : defaultTable;
+  priv[table].tableName = table;
 
   // If a definition was provided, apply the table definition to the extract.
   if (definition) {
@@ -81,18 +76,52 @@ function Extract(path, definition) {
       priv[table].nativeTable = priv.nativeExtract.addTable(table, priv[table].nativeTableDefinition);
     }
   }
-  // Otherwise, get the table definition from the existing TDE.
   else {
-    priv[table].nativeTable = priv.nativeExtract.openTable(table);
-    priv[table].nativeTableDefinition = priv[table].nativeTable.getTableDefinition();
-    definition = convertTdeApiTableDefToWdc(priv[table].nativeTableDefinition, table);
+    if (priv.nativeExtract.hasTable(table)) {
+      priv[table].nativeTable = priv.nativeExtract.openTable(table);
+      priv[table].nativeTableDefinition = priv[table].nativeTable.getTableDefinition();
+      definition = convertTdeApiTableDefToWdc(priv[table].nativeTableDefinition, table);
+    }
   }
 
   priv[table].definition = definition;
 }
 
+/**
+ * Instantiates a new Tableau extract wrapper.
+ *
+ * @param {String} path
+ * @param {TableInfo} definition
+ *   An optional table definition, in the same format as the Tableau WDC API.
+ * @constructor
+ */
+function Extract(path, definition) {
+  var table = definition && definition.id ? definition.id : defaultTable;
+
+  priv.path = path;
+  priv.nativeExtract = new tableau.Extract(priv.path);
+  instantiateNativeTable(table, definition);
+}
+
+/**
+ * Adds another table to the Tableau extract.
+ *
+ * @param {String} table
+ *   The name of the table.
+ * @param {TableInfo} definition
+ *   A table definition, in the same format as the Tableau WDC API.
+ */
+Extract.prototype.addTable = function (table, definition) {
+  instantiateNativeTable(table, definition);
+};
+
 Extract.prototype.getDefinition = function (table) {
   table = table || defaultTable;
+
+  // If the definition isn't already loaded, try instantiating it.
+  if (!priv[table] || !priv[table].definition) {
+    instantiateNativeTable(table);
+  }
   return priv[table].definition;
 };
 
