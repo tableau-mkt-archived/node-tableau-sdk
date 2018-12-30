@@ -2,7 +2,7 @@
 
 var chai = require('chai'),
     expect = chai.expect,
-    fs = require('fs');
+    fs = require('fs-extra');
 
 chai.use(require('chai-fs'));
 chai.should();
@@ -19,10 +19,11 @@ describe('extract', function () {
 
   before(function() {
     // Ensure we have a place to put test extracts.
-    fs.mkdirSync(targetDir);
+    fs.ensureDirSync(targetDir);
 
     // Also ensure log files are written there.
     process.env['TAB_SDK_LOGDIR'] = targetDir;
+    process.env['TAB_SDK_TMPDIR'] = targetDir;
   });
 
   it('throws error when opening extract with invalid name', function () {
@@ -134,11 +135,8 @@ describe('extract', function () {
   });
 
   after(function () {
-    // Also clean out log files.
-    fs.unlinkSync(targetDir + '/DataExtract.log');
-
     // Clean up the test extract folder.
-    fs.rmdirSync(targetDir);
+    fs.removeSync(targetDir);
   });
 
 });
