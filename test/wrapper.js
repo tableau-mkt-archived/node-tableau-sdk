@@ -11,7 +11,6 @@ describe('wrapper', function () {
   var tableau = require('../index.js'),
       targetDir = './build/test',
       tableDef = {
-        id: 'mocha-test-table',
         columns: [{
           id: 'testBool',
           dataType: 'bool'
@@ -50,7 +49,7 @@ describe('wrapper', function () {
     process.env['TAB_SDK_TMPDIR'] = targetDir;
   });
 
-  describe('Extract', function () {
+  describe('Single-Table Extract', function () {
 
     it('creates an extract file from definition', function () {
       expectedPath = targetDir + '/mocha-from-definition.hyper';
@@ -232,6 +231,22 @@ describe('wrapper', function () {
       // This is an error we throw rather than the SDK, so check the text.
       return expect(extract.insertMultiple.bind(extract, {}))
         .to.throw('Expected an array of several rows.');
+    });
+
+  });
+
+  describe('Multi-Table Extract', function () {
+
+    it('creates an extract file with custom table name', function () {
+      expectedPath = targetDir + '/mocha-from-definition.hyper';
+      tableDef.id = 'custom-table';
+      extract = new tableau(expectedPath, tableDef);
+
+      // Ensure the TDE was created.
+      expectedPath.should.be.a.file();
+
+      // Also check that definitions match.
+      extract.getDefinition(tableDef.id).should.deep.equal(tableDef);
     });
 
   });
