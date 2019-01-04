@@ -141,9 +141,9 @@ three ways:
 - As a string exactly conforming to either `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`.
   This is the most performant way to insert dates into your extract, and is
   recommended for very large datasets wherever possible.
-- As an object instance of `moment`. This maybe the most performant way to
+- As an object instance of `moment`. This may be the most performant way to
   insert dates into your extract in situations where you are already using the
-  `moment.js` library to manipulate dates.
+  `moment.js` library to manipulate dates prior to insertion.
 
 
 ## Advanced usage (native APIs)
