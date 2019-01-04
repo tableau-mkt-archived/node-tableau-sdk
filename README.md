@@ -132,6 +132,20 @@ extract.insert(tables.orders.id, {
 extract.close();
 ```
 
+### Date handling
+If your extract includes a date or datetime, you can pass the value in one of
+three ways:
+
+- As a string that is in an ISO format recognized by [moment.js](https://momentjs.com/).
+  This is the simplest way to insert dates into to your extract
+- As a string exactly conforming to either `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`.
+  This is the most performant way to insert dates into your extract, and is
+  recommended for very large datasets wherever possible.
+- As an object instance of `moment`. This may be the most performant way to
+  insert dates into your extract in situations where you are already using the
+  `moment.js` library to manipulate dates prior to insertion.
+
+
 ## Advanced usage (native APIs)
 
 This API provides a thin wrapper around the native C/C++ Tableau SDK that
