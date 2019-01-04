@@ -1,6 +1,7 @@
 'use strict';
 
-var chai = require('chai'),
+var moment = require('moment'),
+    chai = require('chai'),
     expect = chai.expect,
     fs = require('fs-extra');
 
@@ -134,8 +135,8 @@ describe('wrapper', function () {
           Math.random().toString(36).substring(7),
           Math.round(Math.random() * -100),
           1 + Math.random(),
-          '2016-01-01',
-          '2015-09-23 12:23',
+          moment('2016-01-01'),
+          '2015-09-23 12:23:01',
           'LINESTRING(1 1, 3 3)'
         ]);
       }
