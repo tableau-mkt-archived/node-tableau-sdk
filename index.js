@@ -52,6 +52,22 @@ function convertTdeApiTableDefToWdc(tableDef, tableName) {
 }
 
 /**
+ * Given a table and table definition, creates a map of column indexes to native
+ * extract setter methods. This is a performance optimization.
+ */
+function instantiateMethodMap(table, definition) {
+  // This should never change for a given table. Shortcut this relatively
+  // expensive process if it's already known.
+  if (priv[table].methodMap) {
+    return;
+  }
+
+  priv[table].methodMap = definition.columns.map(function (col, i) {
+    return enums.typeNameSetMethod(priv[table].nativeTableDefinition.getColumnType(i));
+  });
+}
+
+/**
  * Helper function that instantiates and stashes a table for subsequent
  * use.
  *
@@ -59,7 +75,7 @@ function convertTdeApiTableDefToWdc(tableDef, tableName) {
  * @param definition
  */
 function instantiateNativeTable(table, definition) {
-  priv[table] = {};
+  priv[table] = priv[table] || {};
   priv[table].tableName = table;
 
   // If a definition was provided, apply the table definition to the extract.
@@ -85,6 +101,92 @@ function instantiateNativeTable(table, definition) {
   }
 
   priv[table].definition = definition;
+  instantiateMethodMap(table, definition);
+}
+
+/**
+ * Sets a given value on the given tableRow for the given table, using them
+ * provided index. Just encapsulates row insertion logic.
+ * @param {String} table
+ *
+ * @param {TableRow} tableRow
+ *   The native TableauExtract tableRow to set values on.
+ * @param {Integer} index
+ *   The column number the value should be written to.
+ * @param {*} value
+ *   The value to be written to the row.
+ */
+function smartSetValueOnTableRow(table, tableRow, index, value) {
+  var method = priv[table].methodMap[index],
+      dateTime;
+
+  // If the value is specifically null (or undefined), then set a null value.
+  if (value == null) {
+    tableRow.setNull(index);
+  }
+  // Date has a slightly more annoying argument set.
+  else if (method === 'setDate') {
+    // If the date exactly matches the format "YYYY-MM-DD", then regex it out.
+    if (typeof value === 'string') {
+      dateTime = value.match(/^(\d{4})-(\d{2})-(\d{2})$/) || moment(value);
+    }
+    // Otherwise, if the date provided is an instance of moment, use it.
+    else {
+      dateTime = value instanceof moment ? value : moment(value);
+    }
+
+    // If we were successfully able to parse the date via regex, set those values.
+    if (dateTime instanceof Array) {
+      tableRow[method](index,
+        parseInt(dateTime[1]),
+        parseInt(dateTime[2]),
+        parseInt(dateTime[3])
+      );
+    }
+    // Otherwise, pull the relevant values from moment.
+    else {
+      tableRow[method](index,
+        dateTime.get('year'),
+        dateTime.get('month') + 1,
+        dateTime.get('date')
+      );
+    }
+  }
+  // DateTime has an even more annoying argument set.
+  else if (method === 'setDateTime') {
+    if (typeof value === 'string') {
+      dateTime = value.match(/^(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})$/) || moment(value);
+    }
+    else {
+      dateTime = value instanceof moment ? value : moment(value);
+    }
+
+    if (dateTime instanceof Array) {
+      tableRow[method](index,
+        parseInt(dateTime[1]),
+        parseInt(dateTime[2]),
+        parseInt(dateTime[3]),
+        parseInt(dateTime[4]),
+        parseInt(dateTime[5]),
+        parseInt(dateTime[6]),
+        parseInt(dateTime[7])
+      );
+    }
+    else {
+      tableRow[method](index,
+        dateTime.get('year'),
+        dateTime.get('month') + 1,
+        dateTime.get('date'),
+        dateTime.get('hour'),
+        dateTime.get('minute'),
+        dateTime.get('second'),
+        dateTime.get('millisecond')
+      );
+    }
+  }
+  else {
+    tableRow[method](index, value);
+  }
 }
 
 /**
@@ -167,61 +269,17 @@ Extract.prototype.insert = function insert(table, row) {
     throw 'Expected row data in the form of an array or object.';
   }
 
-  // Convert objects to arrays based on the table definition.
+  // If we were passed an object, iterate through the defined columns and try
+  // to set values according to the field name specified in the schema.
   if (!(row instanceof Array)) {
-    for (rowKey in row) {
-      // Ensure we're only looking at object properties, nothing fancy.
-      if (!row.hasOwnProperty(rowKey)) {
-        continue;
-      }
-
-      // Find the index of the column with this ID.
-      rowIndex = _.findIndex(priv[table].definition.columns, function (column) {
-        return column.id === rowKey;
-      });
-
-      // If a column with this ID was found, add it to the template!
-      if (rowIndex !== -1) {
-        tempRow[rowIndex] = row[rowKey];
-      }
+    for (i = 0; i < priv[table].definition.columns.length; i++) {
+      smartSetValueOnTableRow(table, tableRow, i, row[priv[table].definition.columns[i].id]);
     }
-
-    // Set our temporary row as THE row.
-    row = tempRow;
   }
-
-  for (i = 0; i < row.length; i++) {
-    // Determine the set method to use.
-    method = enums.typeNameSetMethod(priv[table].nativeTableDefinition.getColumnType(i));
-
-    // If the value is specifically null (or undefined), then set a null value.
-    if (row[i] == null) {
-      tableRow.setNull(i);
-    }
-    // Date has a slightly more annoying argument set.
-    else if (method === 'setDate') {
-      dateTime = moment(row[i]);
-      tableRow[method](i,
-        dateTime.get('year'),
-        dateTime.get('month') + 1,
-        dateTime.get('date')
-      );
-    }
-    // DateTime has an even more annoying argument set.
-    else if (method === 'setDateTime') {
-      dateTime = moment(row[i]);
-      tableRow[method](i,
-        dateTime.get('year'),
-        dateTime.get('month') + 1,
-        dateTime.get('date'),
-        dateTime.get('hour'),
-        dateTime.get('minute'),
-        dateTime.get('second'),
-        dateTime.get('millisecond')
-      );
-    }
-    else {
-      tableRow[method](i, row[i]);
+  // Otherwise, just iterate through the provided rows and set them.
+  else {
+    for (i = 0; i < row.length; i++) {
+      smartSetValueOnTableRow(table, tableRow, i, row[i]);
     }
   }
 
