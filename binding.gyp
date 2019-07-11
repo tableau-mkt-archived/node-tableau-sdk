@@ -50,6 +50,38 @@
               "GCC_ENABLE_CPP_EXCEPTIONS": "YES"
             }
           }
+        ],
+        [
+          "OS==\"win\"",
+          {
+            "cflags_cc+": [
+              "IC:\Program Files\Tableau\SDK\include /EHsc"
+            ],
+            "cflags_cc!": [
+              "-fno-exceptions"
+            ],
+            "include_dirs": [
+              "C:\Program Files\Tableau\SDK\include"
+            ],
+            "libraries": [
+              "C:\Program Files\Tableau\SDK\lib\TableauCommon.lib",
+              "C:\Program Files\Tableau\SDK\lib\TableauHyperExtract.lib"
+            ],
+            "ldflags": [
+              "/LIBPATH:C:\Program Files\Tableau\SDK\lib TableauCommon.lib TableauHyperExtract.lib"
+            ],
+            "msvs_settings": {
+              "VCCLCompilerTool": {
+                "ExceptionHandling": 1
+              },
+              "VCLinkerTool": {
+                "GenerateDebugInformation": "true",
+                "AdditionalLibraryDirectories": [
+                  "C:\Program Files\Tableau\SDK\lib"
+                ]
+              }
+            }
+          }
         ]
       ]
     }

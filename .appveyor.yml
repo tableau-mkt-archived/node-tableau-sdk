@@ -1,0 +1,22 @@
+image: Visual Studio 2017
+
+environment:
+  nodejs_version: "8.11"
+
+install:
+  # Install the SDK.
+  - MD "C:\Program Files\Tableau"
+  - MD "C:\Program Files\Tableau\SDK"
+  - curl -fsS -o "C:\Program Files\Tableau\sdk.zip" https://downloads.tableau.com/tssoftware/extractapi-x64-2018-2-0.zip
+  - 7z x "C:\Program Files\Tableau\sdk.zip" -o"C:\Program Files\Tableau\SDK" -r
+
+  # Install the node module for the targeted node version.
+  - ps: Install-Product node $env:nodejs_version
+  - npm -g install npm@next
+  - npm install
+
+test_script:
+  - npm test
+
+build: off
+
